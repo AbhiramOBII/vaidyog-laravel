@@ -12,10 +12,10 @@ class BlogSeeder extends Seeder
     {
         // Create categories
         $categories = [
-            ['title' => 'Career Advice', 'status' => 'active'],
-            ['title' => 'Industry News', 'status' => 'active'],
-            ['title' => 'Interview Tips', 'status' => 'active'],
-            ['title' => 'Health & Wellness', 'status' => 'active'],
+            ['title' => 'Career Advice', 'slug' => 'career-advice', 'status' => 'active'],
+            ['title' => 'Industry News', 'slug' => 'industry-news', 'status' => 'active'],
+            ['title' => 'Interview Tips', 'slug' => 'interview-tips', 'status' => 'active'],
+            ['title' => 'Health & Wellness', 'slug' => 'health-wellness', 'status' => 'active'],
         ];
 
         foreach ($categories as $cat) {
