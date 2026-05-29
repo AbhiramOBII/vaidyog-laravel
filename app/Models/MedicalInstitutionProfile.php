@@ -66,12 +66,14 @@ class MedicalInstitutionProfile extends Model
     protected static function booted(): void
     {
         static::saving(function (self $profile) {
-            if (!$profile->slug || $profile->isDirty('institution_name', 'city')) {
-                $profile->slug = static::generateUniqueSlug(
-                    $profile->institution_name,
-                    $profile->city,
-                    $profile->id
-                );
+            if (\Illuminate\Support\Facades\Schema::hasColumn('medical_institution_profiles', 'slug')) {
+                if (!$profile->slug || $profile->isDirty('institution_name', 'city')) {
+                    $profile->slug = static::generateUniqueSlug(
+                        $profile->institution_name,
+                        $profile->city,
+                        $profile->id
+                    );
+                }
             }
         });
     }

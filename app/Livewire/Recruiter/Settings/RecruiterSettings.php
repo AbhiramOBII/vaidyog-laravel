@@ -152,6 +152,11 @@ class RecruiterSettings extends Component
 
         if ($profile) {
             $profile->update($profileData);
+        } else {
+            $user->profile()->create(array_merge($profileData, [
+                'user_id' => $user->id,
+                'med_type' => $this->medType ?: \App\Enums\MedTypeEnum::Clinics->value,
+            ]));
         }
 
         $this->existingLogo = $logoPath;
