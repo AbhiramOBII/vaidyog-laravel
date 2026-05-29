@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /recruiter
+Disallow: /job-seeker
+Disallow: /checkout
+Disallow: /my-plan
+
+Sitemap: https://vaidyog.com/sitemap.xml

@@ -1,0 +1,36 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-primary-50: #eeeef6;
+    --color-primary-100: #d5d5eb;
+    --color-primary-200: #ababd7;
+    --color-primary-300: #8181c3;
+    --color-primary-400: #6464b2;
+    --color-primary-500: #464d79;
+    --color-primary-600: #3a3f65;
+    --color-primary-700: #2e3251;
+    --color-primary-800: #22253d;
+    --color-primary-900: #161829;
+
+    --color-teal-50: #e6f5f3;
+    --color-teal-100: #c2e8e2;
+    --color-teal-200: #85d1c5;
+    --color-teal-300: #4ab098;
+    --color-teal-400: #3a9a84;
+    --color-teal-500: #2e7d6a;
+    --color-teal-600: #236058;
+    --color-teal-700: #1a4540;
+    --color-teal-800: #112e2b;
+    --color-teal-900: #091816;
+
+    --shadow-card: 0 1px 4px 0 rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+    --shadow-card-hover: 0 4px 16px 0 rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06);
+}
