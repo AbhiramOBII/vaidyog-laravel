@@ -115,9 +115,27 @@
                         <div class="space-y-4">
                             <input wire:model="addressLine1" type="text" placeholder="Address line 1" class="w-full h-11 px-4 bg-neutral-50 border border-neutral-200 rounded-lg text-sm placeholder-neutral-400 focus:outline-none focus:border-[#464d79] focus:ring-2 focus:ring-[#464d79]/20 transition-all"/>
                             <input wire:model="addressLine2" type="text" placeholder="Address line 2 (optional)" class="w-full h-11 px-4 bg-neutral-50 border border-neutral-200 rounded-lg text-sm placeholder-neutral-400 focus:outline-none focus:border-[#464d79] focus:ring-2 focus:ring-[#464d79]/20 transition-all"/>
-                            <div class="grid grid-cols-3 gap-3">
-                                <input wire:model="city" type="text" placeholder="City" class="w-full h-11 px-4 bg-neutral-50 border border-neutral-200 rounded-lg text-sm placeholder-neutral-400 focus:outline-none focus:border-[#464d79] focus:ring-2 focus:ring-[#464d79]/20 transition-all"/>
-                                <input wire:model="state" type="text" placeholder="State" class="w-full h-11 px-4 bg-neutral-50 border border-neutral-200 rounded-lg text-sm placeholder-neutral-400 focus:outline-none focus:border-[#464d79] focus:ring-2 focus:ring-[#464d79]/20 transition-all"/>
+                            <div class="grid grid-cols-2 gap-3">
+                                <select wire:model.live="country" class="w-full h-11 px-4 bg-neutral-50 border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-[#464d79] focus:ring-2 focus:ring-[#464d79]/20 transition-all">
+                                    <option value="">Select Country</option>
+                                    @foreach($this->countries as $c)
+                                        <option value="{{ $c->name }}">{{ $c->name }}</option>
+                                    @endforeach
+                                </select>
+                                <select wire:model.live="state" class="w-full h-11 px-4 bg-neutral-50 border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-[#464d79] focus:ring-2 focus:ring-[#464d79]/20 transition-all" {{ !$country ? 'disabled' : '' }}>
+                                    <option value="">Select State</option>
+                                    @foreach($this->states as $s)
+                                        <option value="{{ $s->name }}">{{ $s->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <select wire:model.live="city" class="w-full h-11 px-4 bg-neutral-50 border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-[#464d79] focus:ring-2 focus:ring-[#464d79]/20 transition-all" {{ !$state ? 'disabled' : '' }}>
+                                    <option value="">Select City</option>
+                                    @foreach($this->cities as $ct)
+                                        <option value="{{ $ct->name }}">{{ $ct->name }}</option>
+                                    @endforeach
+                                </select>
                                 <input wire:model="pincode" type="text" maxlength="6" placeholder="Pincode" class="w-full h-11 px-4 bg-neutral-50 border border-neutral-200 rounded-lg text-sm placeholder-neutral-400 focus:outline-none focus:border-[#464d79] focus:ring-2 focus:ring-[#464d79]/20 transition-all @error('pincode') border-red-400 @enderror"/>
                             </div>
                             @error('pincode') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror

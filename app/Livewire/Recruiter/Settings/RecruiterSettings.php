@@ -3,9 +3,13 @@
 namespace App\Livewire\Recruiter\Settings;
 
 use App\Enums\MedTypeEnum;
+use App\Models\City;
+use App\Models\Country;
 use App\Models\MedicalInstitution;
+use App\Models\State;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -31,8 +35,9 @@ class RecruiterSettings extends Component
     // Address
     public string $addressLine1 = '';
     public string $addressLine2 = '';
-    public string $city = '';
+    public string $country = '';
     public string $state = '';
+    public string $city = '';
     public string $pincode = '';
 
     // Social Media
@@ -77,8 +82,9 @@ class RecruiterSettings extends Component
 
         $this->addressLine1 = $profile?->address_line1 ?? '';
         $this->addressLine2 = $profile?->address_line2 ?? '';
-        $this->city = $profile?->city ?? '';
+        $this->country = $profile?->country ?? '';
         $this->state = $profile?->state ?? '';
+        $this->city = $profile?->city ?? '';
         $this->pincode = $profile?->pincode ?? '';
 
         $this->socialFacebook = $profile?->social_facebook ?? '';
@@ -111,8 +117,9 @@ class RecruiterSettings extends Component
             'socialYoutube' => ['nullable', 'url', 'max:500'],
             'addressLine1' => ['nullable', 'string', 'max:255'],
             'addressLine2' => ['nullable', 'string', 'max:255'],
-            'city' => ['nullable', 'string', 'max:100'],
+            'country' => ['nullable', 'string', 'max:100'],
             'state' => ['nullable', 'string', 'max:100'],
+            'city' => ['nullable', 'string', 'max:100'],
             'pincode' => ['nullable', 'string', 'regex:/^\d{6}$/'],
             'logo' => ['nullable', 'image', 'max:2048'],
         ]);
@@ -144,8 +151,9 @@ class RecruiterSettings extends Component
             'social_youtube' => $this->socialYoutube ?: null,
             'address_line1' => $this->addressLine1 ?: null,
             'address_line2' => $this->addressLine2 ?: null,
-            'city' => $this->city ?: null,
+            'country' => $this->country ?: null,
             'state' => $this->state ?: null,
+            'city' => $this->city ?: null,
             'pincode' => $this->pincode ?: null,
             'logo_path' => $logoPath,
         ];
@@ -195,6 +203,41 @@ class RecruiterSettings extends Component
 
         $user = $this->recruiter();
         $user->profile?->update(['logo_path' => null]);
+    }
+
+    public function updatedCountry(): void
+    {
+        $this->state = '';
+        $this->city = '';
+    }
+
+    public function updatedState(): void
+    {
+        $this->city = '';
+    }
+
+    #[Computed]
+    public function countries()
+    {
+        return Country::active()->orderBy('sort_order')->orderBy('name')->get();
+    }
+
+    #[Computed]
+    public function states()
+    {
+        if (!$this->country) return collect();
+        return State::active()
+            ->whereHas('country', fn($q) => $q->where('name', $this->country))
+            ->orderBy('sort_order')->orderBy('name')->get();
+    }
+
+    #[Computed]
+    public function cities()
+    {
+        if (!$this->state) return collect();
+        return City::active()
+            ->whereHas('state', fn($q) => $q->where('name', $this->state))
+            ->orderBy('sort_order')->orderBy('name')->get();
     }
 
     public function render()

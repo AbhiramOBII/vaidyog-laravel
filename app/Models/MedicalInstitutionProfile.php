@@ -26,6 +26,7 @@ class MedicalInstitutionProfile extends Model
         'accreditations',
         'address_line1',
         'address_line2',
+        'country',
         'city',
         'state',
         'pincode',
