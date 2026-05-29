@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminLoginController;
+use App\Http\Controllers\Auth\GoogleCallbackController;
+use App\Http\Controllers\Auth\JobSeekerGoogleController;
 use App\Http\Controllers\Auth\RecruiterGoogleController;
 use App\Livewire\Admin\Applications\ApplicationBin as AdminApplicationBin;
 use App\Livewire\Admin\Applications\ApplicationIndex as AdminApplicationIndex;
@@ -213,7 +215,8 @@ Route::prefix('recruiter')->name('recruiter.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::get('/auth/google/recruiter/redirect', [RecruiterGoogleController::class, 'redirect'])->name('recruiter.google.redirect');
-Route::get('/auth/google/recruiter/callback', [RecruiterGoogleController::class, 'callback'])->name('recruiter.google.callback');
+Route::get('/auth/google/jobseeker/redirect', [JobSeekerGoogleController::class, 'redirect'])->name('jobseeker.google.redirect');
+Route::get('/auth/google/callback', GoogleCallbackController::class)->name('google.callback');
 
 /*
 |--------------------------------------------------------------------------

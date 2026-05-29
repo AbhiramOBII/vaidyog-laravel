@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\MedicalInstitution;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -16,10 +15,8 @@ class RecruiterGoogleController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
-    public function callback(Request $request)
+    public function handleCallback($googleUser)
     {
-        $googleUser = Socialite::driver('google')->user();
-
         // Try existing user by google_id + user_type
         $existing = MedicalInstitution::withoutGlobalScopes()
             ->where('google_id', $googleUser->getId())
@@ -32,7 +29,7 @@ class RecruiterGoogleController extends Controller
             return redirect('/recruiter/dashboard');
         }
 
-        // Check if email exists as MedicalInstitution without google_id → offer link
+        // Check if email exists as MedicalInstitution without google_id → link account
         $byEmail = MedicalInstitution::withoutGlobalScopes()
             ->where('email', $googleUser->getEmail())
             ->where('user_type', 'MedicalInstitution')
