@@ -91,9 +91,10 @@ class JobPosting extends Model
         ];
     }
 
-    public function getRouteKeyName(): string
+    public function resolveRouteBinding($value, $field = null)
     {
-        return 'slug';
+        return $this->where('slug', $value)->first()
+            ?? $this->where('id', $value)->first();
     }
 
     protected static function booted(): void
