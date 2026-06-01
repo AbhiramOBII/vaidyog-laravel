@@ -1,21 +1,24 @@
 <div class="max-w-lg mx-auto py-12 px-4" x-data="{ processing: false }"
+    x-on:razorpay-error.window="processing = false"
     x-on:razorpay-order-created.window="
         processing = true;
         let data = $event.detail[0];
-        let rzp = new Razorpay({
-            key: data.key,
-            amount: data.amount,
-            currency: 'INR',
-            name: data.name,
-            description: data.description,
-            order_id: data.order_id,
-            prefill: { name: data.user_name, email: data.user_email, contact: data.user_phone },
-            handler: function(response) {
-                $wire.verify(response.razorpay_payment_id, response.razorpay_order_id, response.razorpay_signature);
-            },
-            modal: { ondismiss: function() { processing = false; } }
-        });
-        rzp.open();
+        try {
+            let rzp = new Razorpay({
+                key: data.key,
+                amount: data.amount,
+                currency: 'INR',
+                name: data.name,
+                description: data.description,
+                order_id: data.order_id,
+                prefill: { name: data.user_name, email: data.user_email, contact: data.user_phone },
+                handler: function(response) {
+                    $wire.verify(response.razorpay_payment_id, response.razorpay_order_id, response.razorpay_signature);
+                },
+                modal: { ondismiss: function() { processing = false; } }
+            });
+            rzp.open();
+        } catch(e) { processing = false; }
     ">
 
     <h1 class="text-2xl font-bold text-neutral-900 dark:text-white mb-6">Checkout</h1>

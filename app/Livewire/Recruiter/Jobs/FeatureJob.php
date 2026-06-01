@@ -78,7 +78,8 @@ class FeatureJob extends Component
             ]);
         } catch (\Exception $e) {
             $payment->update(['status' => PaymentStatusEnum::Failed->value]);
-            $this->errorMessage = 'Failed to create payment. Please try again.';
+            $this->errorMessage = 'Failed to create payment: ' . $e->getMessage();
+            $this->dispatch('razorpay-error');
         }
     }
 

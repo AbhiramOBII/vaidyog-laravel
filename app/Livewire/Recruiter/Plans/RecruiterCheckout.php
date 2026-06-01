@@ -64,7 +64,8 @@ class RecruiterCheckout extends Component
             ]);
         } catch (\Exception $e) {
             $payment->update(['status' => PaymentStatusEnum::Failed->value]);
-            $this->errorMessage = 'Failed to create payment order. Please try again.';
+            $this->errorMessage = 'Failed to create payment order: ' . $e->getMessage();
+            $this->dispatch('razorpay-error');
         }
     }
 
