@@ -3,10 +3,12 @@
 namespace Tests\Unit;
 
 use App\Services\Payment\RazorpayService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class RazorpayServiceTest extends TestCase
 {
+    use RefreshDatabase;
     public function test_verify_signature_returns_true_for_valid_hmac(): void
     {
         config(['services.razorpay.key_secret' => 'test_secret_key']);

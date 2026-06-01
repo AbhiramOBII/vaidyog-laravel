@@ -55,7 +55,7 @@ class RecruiterCheckout extends Component
             $this->dispatch('razorpay-order-created', [
                 'order_id' => $order['id'],
                 'amount' => $order['amount'],
-                'key' => config('services.razorpay.key_id'),
+                'key' => \App\Models\SiteSetting::get('razorpay_key_id', config('services.razorpay.key_id', '')),
                 'name' => 'Vaidyog',
                 'description' => $this->planOption->plan->name . ' - ' . $this->planOption->label,
                 'user_name' => $user->name,

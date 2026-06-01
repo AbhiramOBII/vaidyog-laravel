@@ -147,7 +147,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Support Tickets
         Route::get('/support-tickets', \App\Livewire\Admin\Support\TicketIndex::class)->name('support-tickets.index');
-        Route::get('/support-tickets/{ticket}', \App\Livewire\Admin\Support\TicketShow::class)->name('support-tickets.show');
+        Route::get('/support-tickets/{ticketId}', \App\Livewire\Admin\Support\TicketShow::class)->name('support-tickets.show');
 
         // Site Settings
         Route::get('/settings', \App\Livewire\Admin\Settings\SiteSettings::class)->name('settings');

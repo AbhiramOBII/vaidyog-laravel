@@ -29,6 +29,7 @@
                     @auth
                     <a href="{{ route('jobseeker.applications.index') }}" wire:navigate class="text-sm font-medium {{ request()->routeIs('jobseeker.applications.*') ? 'text-[#464d79]' : 'text-neutral-600 hover:text-neutral-900' }} transition-colors">My Applications</a>
                     <a href="{{ route('jobseeker.saved-jobs.index') }}" wire:navigate class="text-sm font-medium {{ request()->routeIs('jobseeker.saved-jobs.*') ? 'text-[#464d79]' : 'text-neutral-600 hover:text-neutral-900' }} transition-colors">Saved Jobs</a>
+                    <a href="{{ route('jobseeker.support') }}" wire:navigate class="text-sm font-medium {{ request()->routeIs('jobseeker.support') ? 'text-[#464d79]' : 'text-neutral-600 hover:text-neutral-900' }} transition-colors">Help</a>
                     @endauth
                 </div>
 
@@ -59,6 +60,7 @@
             @auth
             <a href="{{ route('jobseeker.applications.index') }}" wire:navigate class="block py-2 text-sm text-neutral-700">My Applications</a>
             <a href="{{ route('jobseeker.saved-jobs.index') }}" wire:navigate class="block py-2 text-sm text-neutral-700">Saved Jobs</a>
+            <a href="{{ route('jobseeker.support') }}" wire:navigate class="block py-2 text-sm text-neutral-700">Help & Support</a>
             @endauth
         </div>
     </nav>

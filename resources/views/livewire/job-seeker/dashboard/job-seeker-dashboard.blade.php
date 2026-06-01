@@ -61,6 +61,18 @@
         </div>
     </div>
 
+    {{-- CV Upload Reminder --}}
+    @if ($profile && !$profile->resume_path)
+    <div class="flex items-start gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800">
+        <svg class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+        <div class="flex-1">
+            <p class="text-sm font-semibold text-amber-800 dark:text-amber-300">Resume/CV not uploaded</p>
+            <p class="text-xs text-amber-700 dark:text-amber-400 mt-0.5">Uploading your CV increases your chances of getting shortlisted by recruiters. Add it now to stand out.</p>
+        </div>
+        <a href="{{ route('profile.edit') }}" wire:navigate class="shrink-0 px-3 py-1.5 text-xs font-medium text-amber-800 bg-amber-100 hover:bg-amber-200 dark:bg-amber-800/30 dark:text-amber-300 dark:hover:bg-amber-800/50 rounded-lg transition-colors">Upload CV</a>
+    </div>
+    @endif
+
     {{-- Recent Jobs --}}
     <div>
         <div class="flex items-center justify-between mb-5">

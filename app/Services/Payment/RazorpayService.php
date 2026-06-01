@@ -2,17 +2,34 @@
 
 namespace App\Services\Payment;
 
+use App\Models\SiteSetting;
+
 class RazorpayService
 {
     private $api = null;
+
+    private function getKeyId(): string
+    {
+        return SiteSetting::get('razorpay_key_id', config('services.razorpay.key_id', ''));
+    }
+
+    private function getKeySecret(): string
+    {
+        return SiteSetting::get('razorpay_key_secret', config('services.razorpay.key_secret', ''));
+    }
+
+    private function getWebhookSecret(): string
+    {
+        return SiteSetting::get('razorpay_webhook_secret', config('services.razorpay.webhook_secret', ''));
+    }
 
     private function getApi()
     {
         if ($this->api === null) {
             $apiClass = '\Razorpay\Api\Api';
             $this->api = new $apiClass(
-                config('services.razorpay.key_id'),
-                config('services.razorpay.key_secret')
+                $this->getKeyId(),
+                $this->getKeySecret()
             );
         }
         return $this->api;
@@ -36,13 +53,13 @@ class RazorpayService
 
     public function verifySignature(string $orderId, string $paymentId, string $signature): bool
     {
-        $expected = hash_hmac('sha256', $orderId . '|' . $paymentId, config('services.razorpay.key_secret'));
+        $expected = hash_hmac('sha256', $orderId . '|' . $paymentId, $this->getKeySecret());
         return hash_equals($expected, $signature);
     }
 
     public function verifyWebhookSignature(string $payload, string $signature): bool
     {
-        $expected = hash_hmac('sha256', $payload, config('services.razorpay.webhook_secret'));
+        $expected = hash_hmac('sha256', $payload, $this->getWebhookSecret());
         return hash_equals($expected, $signature);
     }
 }

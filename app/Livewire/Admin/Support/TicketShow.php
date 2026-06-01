@@ -13,9 +13,9 @@ class TicketShow extends Component
     public string $newComment = '';
     public string $newStatus = '';
 
-    public function mount(int $ticket): void
+    public function mount(int $ticketId): void
     {
-        $this->ticket = SupportTicket::with('user')->findOrFail($ticket);
+        $this->ticket = SupportTicket::with('user')->findOrFail($ticketId);
         $this->newStatus = $this->ticket->status;
     }
 

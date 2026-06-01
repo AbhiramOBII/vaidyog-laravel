@@ -38,6 +38,11 @@ class SiteSettings extends Component
     public string $announcement_bar = '';
     public bool $announcement_active = false;
 
+    // Payment (Razorpay)
+    public string $razorpay_key_id = '';
+    public string $razorpay_key_secret = '';
+    public string $razorpay_webhook_secret = '';
+
     // Logo uploads
     public $logo = null;
     public $favicon = null;
@@ -75,6 +80,10 @@ class SiteSettings extends Component
 
         $this->existing_logo = $settings['site_logo'] ?? null;
         $this->existing_favicon = $settings['site_favicon'] ?? null;
+
+        $this->razorpay_key_id = $settings['razorpay_key_id'] ?? config('services.razorpay.key_id') ?? '';
+        $this->razorpay_key_secret = $settings['razorpay_key_secret'] ?? config('services.razorpay.key_secret') ?? '';
+        $this->razorpay_webhook_secret = $settings['razorpay_webhook_secret'] ?? config('services.razorpay.webhook_secret') ?? '';
     }
 
     public function save(): void
@@ -126,6 +135,11 @@ class SiteSettings extends Component
         SiteSetting::set('footer_text', $this->footer_text, 'appearance');
         SiteSetting::set('announcement_bar', $this->announcement_bar, 'appearance');
         SiteSetting::set('announcement_active', $this->announcement_active ? '1' : '0', 'appearance');
+
+        // Payment
+        SiteSetting::set('razorpay_key_id', $this->razorpay_key_id, 'payment');
+        SiteSetting::set('razorpay_key_secret', $this->razorpay_key_secret, 'payment');
+        SiteSetting::set('razorpay_webhook_secret', $this->razorpay_webhook_secret, 'payment');
 
         // File uploads
         if ($this->logo) {

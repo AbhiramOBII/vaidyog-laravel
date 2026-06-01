@@ -24,7 +24,7 @@
     {{-- Tabs --}}
     <div class="border-b border-neutral-200 dark:border-neutral-700 mb-6">
         <nav class="flex gap-1 -mb-px">
-            @foreach(['general' => 'General', 'seo' => 'SEO', 'social' => 'Social Links', 'appearance' => 'Appearance'] as $tab => $label)
+            @foreach(['general' => 'General', 'seo' => 'SEO', 'social' => 'Social Links', 'appearance' => 'Appearance', 'payment' => 'Payment'] as $tab => $label)
             <button wire:click="setTab('{{ $tab }}')"
                     class="px-4 py-2.5 text-sm font-medium border-b-2 transition-colors {{ $activeTab === $tab ? 'border-[#464d79] text-[#464d79] dark:text-white dark:border-white' : 'border-transparent text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300' }}">
                 {{ $label }}
@@ -215,6 +215,52 @@
                     </div>
                     <span class="text-sm text-neutral-700 dark:text-neutral-300">Show announcement bar</span>
                 </label>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- Payment Tab --}}
+    @if($activeTab === 'payment')
+    <div class="space-y-6">
+        <div class="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 p-6">
+            <div class="flex items-center gap-3 mb-1">
+                <svg class="w-5 h-5 text-[#464d79]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+                <h3 class="text-base font-semibold text-neutral-900 dark:text-white">Razorpay Configuration</h3>
+            </div>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 mb-5">Manage your Razorpay payment gateway credentials. These are used for processing subscription payments.</p>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Key ID</label>
+                    <input type="text" wire:model="razorpay_key_id" placeholder="rzp_live_xxxxxxxxxxxxxx" class="w-full px-3 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white text-sm font-mono focus:ring-2 focus:ring-[#464d79]/20 focus:border-[#464d79] transition-colors"/>
+                    <p class="text-xs text-neutral-400 mt-1">Your Razorpay API Key ID (starts with <code class="text-neutral-500">rzp_live_</code> or <code class="text-neutral-500">rzp_test_</code>)</p>
+                    @error('razorpay_key_id') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Key Secret</label>
+                    <input type="password" wire:model="razorpay_key_secret" placeholder="••••••••••••••••••••" class="w-full px-3 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white text-sm font-mono focus:ring-2 focus:ring-[#464d79]/20 focus:border-[#464d79] transition-colors"/>
+                    <p class="text-xs text-neutral-400 mt-1">Your Razorpay API Key Secret</p>
+                    @error('razorpay_key_secret') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Webhook Secret</label>
+                    <input type="password" wire:model="razorpay_webhook_secret" placeholder="••••••••••••••••••••" class="w-full px-3 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white text-sm font-mono focus:ring-2 focus:ring-[#464d79]/20 focus:border-[#464d79] transition-colors"/>
+                    <p class="text-xs text-neutral-400 mt-1">Used to verify incoming webhook events from Razorpay</p>
+                    @error('razorpay_webhook_secret') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-amber-50 dark:bg-amber-900/10 rounded-xl border border-amber-200 dark:border-amber-800 p-5">
+            <div class="flex gap-3">
+                <svg class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+                <div>
+                    <h4 class="text-sm font-semibold text-amber-800 dark:text-amber-300">Webhook Setup</h4>
+                    <p class="text-xs text-amber-700 dark:text-amber-400 mt-1">Configure your Razorpay webhook URL in the <a href="https://dashboard.razorpay.com/app/webhooks" target="_blank" class="underline font-medium">Razorpay Dashboard</a> to:</p>
+                    <code class="block mt-2 px-3 py-1.5 bg-white dark:bg-neutral-800 rounded text-xs text-neutral-700 dark:text-neutral-300 border border-amber-200 dark:border-amber-700 font-mono">{{ url('/razorpay/webhook') }}</code>
+                    <p class="text-xs text-amber-700 dark:text-amber-400 mt-2">Events to subscribe: <span class="font-medium">payment.captured</span>, <span class="font-medium">payment.failed</span></p>
+                </div>
             </div>
         </div>
     </div>
