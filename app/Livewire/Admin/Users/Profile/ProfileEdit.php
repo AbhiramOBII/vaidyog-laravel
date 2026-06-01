@@ -15,7 +15,7 @@ class ProfileEdit extends Component
 {
     use RecalculatesProfileCompleteness;
 
-    public int $userId;
+    public string $userId;
 
     // Personal
     public string $first_name = '';
@@ -41,14 +41,14 @@ class ProfileEdit extends Component
     public array $subDesignations = [];
     public array $indianStates = [];
 
-    public function mount(int $user): void
+    public function mount(string $user): void
     {
         $this->userId = $user;
         $user = User::findOrFail($this->userId);
         $profile = $user->jobSeekerProfile;
 
         $this->designations = Designation::active()->pluck('name')->toArray();
-        $this->indianStates = config('indian_states', []);
+        $this->indianStates = config('indian_states.states', []);
 
         if ($profile) {
             $this->first_name = $profile->first_name ?? '';

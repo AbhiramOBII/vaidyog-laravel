@@ -10,10 +10,10 @@ use Livewire\Component;
 #[Layout('components.layouts.recruiter', ['pageTitle' => 'Candidate Profile'])]
 class CandidateShow extends Component
 {
-    public int $userId;
+    public string $userId;
     public ?JobSeekerProfile $profile = null;
 
-    public function mount(int $userId): void
+    public function mount(string $userId): void
     {
         $this->userId = $userId;
         $candidate = User::findOrFail($userId);

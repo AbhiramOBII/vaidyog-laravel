@@ -16,7 +16,7 @@ class PublicRoutesTest extends TestCase
 
     public function test_jobs_index_is_accessible(): void
     {
-        $this->get('/jobs')->assertStatus(200);
+        $this->get('/best-healthcare-jobs')->assertStatus(200);
     }
 
     public function test_blogs_index_is_accessible(): void

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Profile;
 
 use App\Livewire\Admin\Users\Profile\ProfileEdit as AdminProfileEdit;
+use App\Models\Admin;
 use App\Models\JobSeekerProfile;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -13,13 +14,18 @@ class AdminProfileTest extends TestCase
 {
     use RefreshDatabase;
 
-    private User $admin;
+    private Admin $admin;
     private User $jobSeeker;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->admin = User::factory()->create(['role' => 'admin']);
+        $this->admin = Admin::create([
+            'name' => 'Test Admin',
+            'email' => 'admin@test.com',
+            'password' => 'password',
+            'is_active' => true,
+        ]);
         $this->jobSeeker = User::factory()->create();
         JobSeekerProfile::create([
             'user_id' => $this->jobSeeker->id,
@@ -30,7 +36,7 @@ class AdminProfileTest extends TestCase
 
     public function test_admin_can_view_user_profile(): void
     {
-        $this->actingAs($this->admin)
+        $this->actingAs($this->admin, 'admin')
             ->get(route('admin.users.profile.show', $this->jobSeeker->id))
             ->assertStatus(200)
             ->assertSee('Original Name');
@@ -38,7 +44,7 @@ class AdminProfileTest extends TestCase
 
     public function test_admin_can_edit_user_profile(): void
     {
-        Livewire::actingAs($this->admin)
+        Livewire::actingAs($this->admin, 'admin')
             ->test(AdminProfileEdit::class, ['user' => $this->jobSeeker->id])
             ->set('first_name', 'Updated')
             ->set('last_name', 'Admin')
@@ -55,7 +61,7 @@ class AdminProfileTest extends TestCase
 
     public function test_admin_can_toggle_open_to_work(): void
     {
-        Livewire::actingAs($this->admin)
+        Livewire::actingAs($this->admin, 'admin')
             ->test(AdminProfileEdit::class, ['user' => $this->jobSeeker->id])
             ->set('first_name', 'Original')
             ->set('last_name', 'Name')
@@ -69,7 +75,7 @@ class AdminProfileTest extends TestCase
 
     public function test_admin_edit_validates_required_fields(): void
     {
-        Livewire::actingAs($this->admin)
+        Livewire::actingAs($this->admin, 'admin')
             ->test(AdminProfileEdit::class, ['user' => $this->jobSeeker->id])
             ->set('first_name', '')
             ->set('last_name', '')

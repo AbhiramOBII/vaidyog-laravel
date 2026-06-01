@@ -9,9 +9,9 @@ use Livewire\Component;
 #[Layout('components.layouts.admin', ['pageTitle' => 'User Profile'])]
 class ProfileShow extends Component
 {
-    public int $userId;
+    public string $userId;
 
-    public function mount(int $user): void
+    public function mount(string $user): void
     {
         $this->userId = $user;
     }

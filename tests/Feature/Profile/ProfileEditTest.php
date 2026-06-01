@@ -74,6 +74,7 @@ class ProfileEditTest extends TestCase
         Livewire::actingAs($this->user)
             ->test(ProfileEdit::class)
             ->set('designation', 'Doctor')
+            ->set('subdesignation', 'General Physician')
             ->set('skills', ['Surgery', 'Patient Care'])
             ->set('about', str_repeat('A healthcare professional with extensive experience. ', 3))
             ->set('is_open_to_work', true)

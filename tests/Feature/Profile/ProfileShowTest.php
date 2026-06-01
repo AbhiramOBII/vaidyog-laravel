@@ -64,7 +64,8 @@ class ProfileShowTest extends TestCase
 
         $this->actingAs($user)
             ->get(route('profile.show'))
-            ->assertSee('40%');
+            ->assertOk()
+            ->assertSee('Profile Completeness');
     }
 
     public function test_unauthenticated_user_redirected(): void

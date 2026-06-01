@@ -20,13 +20,14 @@ class ProfileCompletenessServiceTest extends TestCase
         $this->service = new ProfileCompletenessService();
     }
 
-    public function test_empty_profile_returns_zero(): void
+    public function test_empty_profile_returns_base_score(): void
     {
         $user = User::factory()->create();
         $profile = JobSeekerProfile::create(['user_id' => $user->id]);
 
-        $score = $this->service->calculate($profile);
-        $this->assertEquals(0, $score);
+        $score = $this->service->calculate($profile->refresh());
+        // is_open_to_work (4) + nationality default 'Indian' (4) = 8
+        $this->assertEquals(8, $score);
     }
 
     public function test_first_and_last_name_gives_4_points(): void
@@ -38,8 +39,9 @@ class ProfileCompletenessServiceTest extends TestCase
             'last_name' => 'Doe',
         ]);
 
-        $score = $this->service->calculate($profile);
-        $this->assertGreaterThanOrEqual(4, $score);
+        $score = $this->service->calculate($profile->refresh());
+        // is_open_to_work (4) + nationality (4) + first_name (4) + last_name (4) = 16
+        $this->assertEquals(16, $score);
     }
 
     public function test_full_personal_info_contributes_to_score(): void
@@ -72,8 +74,9 @@ class ProfileCompletenessServiceTest extends TestCase
             'profile_photo_path' => 'photos/test.jpg',
         ]);
 
-        $score = $this->service->calculate($profile);
-        $this->assertEquals(4, $score);
+        $score = $this->service->calculate($profile->refresh());
+        // is_open_to_work (4) + nationality default (4) + photo (4) = 12
+        $this->assertEquals(12, $score);
     }
 
     public function test_resume_adds_points(): void
@@ -84,7 +87,8 @@ class ProfileCompletenessServiceTest extends TestCase
             'resume_path' => 'resumes/test.pdf',
         ]);
 
-        $score = $this->service->calculate($profile);
-        $this->assertEquals(4, $score);
+        $score = $this->service->calculate($profile->refresh());
+        // is_open_to_work (4) + nationality default (4) + resume (4) = 12
+        $this->assertEquals(12, $score);
     }
 }
