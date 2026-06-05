@@ -64,93 +64,103 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
         // Job Seekers
-        Route::get('/job-seekers', JobSeekerIndex::class)->name('job-seekers.index');
-        Route::get('/job-seekers/create', JobSeekerCreate::class)->name('job-seekers.create');
-        Route::get('/job-seekers/bulk-import', JobSeekerBulkImport::class)->name('job-seekers.bulk-import');
+        Route::get('/job-seekers', JobSeekerIndex::class)->name('job-seekers.index')->middleware('admin.permission:job_seekers.view');
+        Route::get('/job-seekers/create', JobSeekerCreate::class)->name('job-seekers.create')->middleware('admin.permission:job_seekers.create');
+        Route::get('/job-seekers/bulk-import', JobSeekerBulkImport::class)->name('job-seekers.bulk-import')->middleware('admin.permission:job_seekers.create');
 
         // Recruiters
-        Route::get('/recruiters', RecruiterIndex::class)->name('recruiters.index');
-        Route::get('/recruiters/create', RecruiterCreate::class)->name('recruiters.create');
-        Route::get('/recruiters/{user}', RecruiterShow::class)->name('recruiters.show');
-        Route::get('/recruiters/{user}/edit', RecruiterEdit::class)->name('recruiters.edit');
+        Route::get('/recruiters', RecruiterIndex::class)->name('recruiters.index')->middleware('admin.permission:recruiters.view');
+        Route::get('/recruiters/create', RecruiterCreate::class)->name('recruiters.create')->middleware('admin.permission:recruiters.create');
+        Route::get('/recruiters/{user}', RecruiterShow::class)->name('recruiters.show')->middleware('admin.permission:recruiters.view');
+        Route::get('/recruiters/{user}/edit', RecruiterEdit::class)->name('recruiters.edit')->middleware('admin.permission:recruiters.edit');
 
         // Job Postings
-        Route::get('/jobs', AdminJobIndex::class)->name('jobs.index');
-        Route::get('/jobs/pending', AdminJobPending::class)->name('jobs.pending');
-        Route::get('/jobs/bin', AdminJobBin::class)->name('jobs.bin');
-        Route::get('/jobs/create', AdminJobCreate::class)->name('jobs.create');
-        Route::get('/jobs/{job}', AdminJobShow::class)->name('jobs.show');
-        Route::get('/jobs/{job}/edit', AdminJobEdit::class)->name('jobs.edit');
+        Route::get('/jobs', AdminJobIndex::class)->name('jobs.index')->middleware('admin.permission:jobs.view');
+        Route::get('/jobs/pending', AdminJobPending::class)->name('jobs.pending')->middleware('admin.permission:jobs.approve');
+        Route::get('/jobs/bin', AdminJobBin::class)->name('jobs.bin')->middleware('admin.permission:jobs.delete');
+        Route::get('/jobs/create', AdminJobCreate::class)->name('jobs.create')->middleware('admin.permission:jobs.create');
+        Route::get('/jobs/{job}', AdminJobShow::class)->name('jobs.show')->middleware('admin.permission:jobs.view');
+        Route::get('/jobs/{job}/edit', AdminJobEdit::class)->name('jobs.edit')->middleware('admin.permission:jobs.edit');
 
         // Applications
-        Route::get('/applications', AdminApplicationIndex::class)->name('applications.index');
-        Route::get('/applications/bin', AdminApplicationBin::class)->name('applications.bin');
-        Route::get('/applications/{application}', AdminApplicationShow::class)->name('applications.show');
+        Route::get('/applications', AdminApplicationIndex::class)->name('applications.index')->middleware('admin.permission:applications.view');
+        Route::get('/applications/bin', AdminApplicationBin::class)->name('applications.bin')->middleware('admin.permission:applications.delete');
+        Route::get('/applications/{application}', AdminApplicationShow::class)->name('applications.show')->middleware('admin.permission:applications.view');
 
         // Plans
-        Route::get('/plans/job-seeker', JobSeekerPlanIndex::class)->name('plans.jobseeker.index');
-        Route::get('/plans/job-seeker/create', JobSeekerPlanForm::class)->name('plans.jobseeker.create');
-        Route::get('/plans/job-seeker/{plan}/edit', JobSeekerPlanForm::class)->name('plans.jobseeker.edit');
-        Route::get('/plans/recruiter', RecruiterPlanIndex::class)->name('plans.recruiter.index');
-        Route::get('/plans/recruiter/create', RecruiterPlanForm::class)->name('plans.recruiter.create');
-        Route::get('/plans/recruiter/{plan}/edit', RecruiterPlanForm::class)->name('plans.recruiter.edit');
-        Route::get('/plans/featured', FeaturedPlanIndex::class)->name('plans.featured.index');
-        Route::get('/plans/assign', AssignPlan::class)->name('plans.assign.index');
+        Route::get('/plans/job-seeker', JobSeekerPlanIndex::class)->name('plans.jobseeker.index')->middleware('admin.permission:plans.view');
+        Route::get('/plans/job-seeker/create', JobSeekerPlanForm::class)->name('plans.jobseeker.create')->middleware('admin.permission:plans.manage');
+        Route::get('/plans/job-seeker/{plan}/edit', JobSeekerPlanForm::class)->name('plans.jobseeker.edit')->middleware('admin.permission:plans.manage');
+        Route::get('/plans/recruiter', RecruiterPlanIndex::class)->name('plans.recruiter.index')->middleware('admin.permission:plans.view');
+        Route::get('/plans/recruiter/create', RecruiterPlanForm::class)->name('plans.recruiter.create')->middleware('admin.permission:plans.manage');
+        Route::get('/plans/recruiter/{plan}/edit', RecruiterPlanForm::class)->name('plans.recruiter.edit')->middleware('admin.permission:plans.manage');
+        Route::get('/plans/featured', FeaturedPlanIndex::class)->name('plans.featured.index')->middleware('admin.permission:plans.view');
+        Route::get('/plans/assign', AssignPlan::class)->name('plans.assign.index')->middleware('admin.permission:subscriptions.assign');
 
         // Payments & Subscription Overview
-        Route::get('/payments', \App\Livewire\Admin\Payments\PaymentIndex::class)->name('payments.index');
-        Route::get('/subscriptions/job-seekers', \App\Livewire\Admin\Subscriptions\JobSeekerSubscriptions::class)->name('subscriptions.jobseekers');
-        Route::get('/subscriptions/recruiters', \App\Livewire\Admin\Subscriptions\RecruiterSubscriptions::class)->name('subscriptions.recruiters');
+        Route::get('/payments', \App\Livewire\Admin\Payments\PaymentIndex::class)->name('payments.index')->middleware('admin.permission:payments.view');
+        Route::get('/subscriptions/job-seekers', \App\Livewire\Admin\Subscriptions\JobSeekerSubscriptions::class)->name('subscriptions.jobseekers')->middleware('admin.permission:subscriptions.view');
+        Route::get('/subscriptions/recruiters', \App\Livewire\Admin\Subscriptions\RecruiterSubscriptions::class)->name('subscriptions.recruiters')->middleware('admin.permission:subscriptions.view');
 
         // User Profile (admin view/edit)
         Route::get('/users/{user}/profile', \App\Livewire\Admin\Users\Profile\ProfileShow::class)->name('users.profile.show');
         Route::get('/users/{user}/profile/edit', \App\Livewire\Admin\Users\Profile\ProfileEdit::class)->name('users.profile.edit');
 
         // News Categories
-        Route::get('/news-categories', \App\Livewire\Admin\News\NewsCategoryIndex::class)->name('news-categories.index');
-        Route::get('/news-categories/create', \App\Livewire\Admin\News\NewsCategoryForm::class)->name('news-categories.create');
-        Route::get('/news-categories/{category}/edit', \App\Livewire\Admin\News\NewsCategoryForm::class)->name('news-categories.edit');
+        Route::get('/news-categories', \App\Livewire\Admin\News\NewsCategoryIndex::class)->name('news-categories.index')->middleware('admin.permission:news.view');
+        Route::get('/news-categories/create', \App\Livewire\Admin\News\NewsCategoryForm::class)->name('news-categories.create')->middleware('admin.permission:news.create');
+        Route::get('/news-categories/{category}/edit', \App\Livewire\Admin\News\NewsCategoryForm::class)->name('news-categories.edit')->middleware('admin.permission:news.edit');
 
         // News
-        Route::get('/news', \App\Livewire\Admin\News\NewsIndex::class)->name('news.index');
-        Route::get('/news/create', \App\Livewire\Admin\News\NewsForm::class)->name('news.create');
-        Route::get('/news/{news}/edit', \App\Livewire\Admin\News\NewsForm::class)->name('news.edit');
+        Route::get('/news', \App\Livewire\Admin\News\NewsIndex::class)->name('news.index')->middleware('admin.permission:news.view');
+        Route::get('/news/create', \App\Livewire\Admin\News\NewsForm::class)->name('news.create')->middleware('admin.permission:news.create');
+        Route::get('/news/{news}/edit', \App\Livewire\Admin\News\NewsForm::class)->name('news.edit')->middleware('admin.permission:news.edit');
 
         // Event Categories
-        Route::get('/event-categories', \App\Livewire\Admin\Events\EventCategoryIndex::class)->name('event-categories.index');
-        Route::get('/event-categories/create', \App\Livewire\Admin\Events\EventCategoryForm::class)->name('event-categories.create');
-        Route::get('/event-categories/{category}/edit', \App\Livewire\Admin\Events\EventCategoryForm::class)->name('event-categories.edit');
+        Route::get('/event-categories', \App\Livewire\Admin\Events\EventCategoryIndex::class)->name('event-categories.index')->middleware('admin.permission:events.view');
+        Route::get('/event-categories/create', \App\Livewire\Admin\Events\EventCategoryForm::class)->name('event-categories.create')->middleware('admin.permission:events.create');
+        Route::get('/event-categories/{category}/edit', \App\Livewire\Admin\Events\EventCategoryForm::class)->name('event-categories.edit')->middleware('admin.permission:events.edit');
 
         // Events
-        Route::get('/events', \App\Livewire\Admin\Events\EventIndex::class)->name('events.index');
-        Route::get('/events/create', \App\Livewire\Admin\Events\EventForm::class)->name('events.create');
-        Route::get('/events/{event}/edit', \App\Livewire\Admin\Events\EventForm::class)->name('events.edit');
+        Route::get('/events', \App\Livewire\Admin\Events\EventIndex::class)->name('events.index')->middleware('admin.permission:events.view');
+        Route::get('/events/create', \App\Livewire\Admin\Events\EventForm::class)->name('events.create')->middleware('admin.permission:events.create');
+        Route::get('/events/{event}/edit', \App\Livewire\Admin\Events\EventForm::class)->name('events.edit')->middleware('admin.permission:events.edit');
 
         // Blog Categories
-        Route::get('/blog-categories', \App\Livewire\Admin\Blogs\BlogCategoryIndex::class)->name('blog-categories.index');
-        Route::get('/blog-categories/create', \App\Livewire\Admin\Blogs\BlogCategoryForm::class)->name('blog-categories.create');
-        Route::get('/blog-categories/{category}/edit', \App\Livewire\Admin\Blogs\BlogCategoryForm::class)->name('blog-categories.edit');
+        Route::get('/blog-categories', \App\Livewire\Admin\Blogs\BlogCategoryIndex::class)->name('blog-categories.index')->middleware('admin.permission:blogs.view');
+        Route::get('/blog-categories/create', \App\Livewire\Admin\Blogs\BlogCategoryForm::class)->name('blog-categories.create')->middleware('admin.permission:blogs.create');
+        Route::get('/blog-categories/{category}/edit', \App\Livewire\Admin\Blogs\BlogCategoryForm::class)->name('blog-categories.edit')->middleware('admin.permission:blogs.edit');
 
         // Blogs
-        Route::get('/blogs', \App\Livewire\Admin\Blogs\BlogIndex::class)->name('blogs.index');
-        Route::get('/blogs/create', \App\Livewire\Admin\Blogs\BlogForm::class)->name('blogs.create');
-        Route::get('/blogs/{blog}/edit', \App\Livewire\Admin\Blogs\BlogForm::class)->name('blogs.edit');
+        Route::get('/blogs', \App\Livewire\Admin\Blogs\BlogIndex::class)->name('blogs.index')->middleware('admin.permission:blogs.view');
+        Route::get('/blogs/create', \App\Livewire\Admin\Blogs\BlogForm::class)->name('blogs.create')->middleware('admin.permission:blogs.create');
+        Route::get('/blogs/{blog}/edit', \App\Livewire\Admin\Blogs\BlogForm::class)->name('blogs.edit')->middleware('admin.permission:blogs.edit');
 
         // Specialties
-        Route::get('/specialties', \App\Livewire\Admin\Specialties\SpecialtyIndex::class)->name('specialties.index');
+        Route::get('/specialties', \App\Livewire\Admin\Specialties\SpecialtyIndex::class)->name('specialties.index')->middleware('admin.permission:specialties.manage');
 
         // FAQs
-        Route::get('/faqs', \App\Livewire\Admin\Faqs\FaqManager::class)->name('faqs.index');
+        Route::get('/faqs', \App\Livewire\Admin\Faqs\FaqManager::class)->name('faqs.index')->middleware('admin.permission:faqs.manage');
 
         // Feedback
-        Route::get('/feedbacks', \App\Livewire\Admin\Feedback\FeedbackIndex::class)->name('feedbacks.index');
+        Route::get('/feedbacks', \App\Livewire\Admin\Feedback\FeedbackIndex::class)->name('feedbacks.index')->middleware('admin.permission:feedbacks.view');
 
         // Support Tickets
-        Route::get('/support-tickets', \App\Livewire\Admin\Support\TicketIndex::class)->name('support-tickets.index');
-        Route::get('/support-tickets/{ticketId}', \App\Livewire\Admin\Support\TicketShow::class)->name('support-tickets.show');
+        Route::get('/support-tickets', \App\Livewire\Admin\Support\TicketIndex::class)->name('support-tickets.index')->middleware('admin.permission:support_tickets.view');
+        Route::get('/support-tickets/{ticketId}', \App\Livewire\Admin\Support\TicketShow::class)->name('support-tickets.show')->middleware('admin.permission:support_tickets.view');
+
+        // Roles
+        Route::get('/roles', \App\Livewire\Admin\Roles\RoleIndex::class)->name('roles.index')->middleware('admin.permission:roles.view');
+        Route::get('/roles/create', \App\Livewire\Admin\Roles\RoleForm::class)->name('roles.create')->middleware('admin.permission:roles.manage');
+        Route::get('/roles/{role}/edit', \App\Livewire\Admin\Roles\RoleForm::class)->name('roles.edit')->middleware('admin.permission:roles.manage');
+
+        // Sub-Admins
+        Route::get('/sub-admins', \App\Livewire\Admin\SubAdmins\SubAdminIndex::class)->name('sub-admins.index')->middleware('admin.permission:sub_admins.view');
+        Route::get('/sub-admins/create', \App\Livewire\Admin\SubAdmins\SubAdminForm::class)->name('sub-admins.create')->middleware('admin.permission:sub_admins.manage');
+        Route::get('/sub-admins/{admin}/edit', \App\Livewire\Admin\SubAdmins\SubAdminForm::class)->name('sub-admins.edit')->middleware('admin.permission:sub_admins.manage');
 
         // Site Settings
-        Route::get('/settings', \App\Livewire\Admin\Settings\SiteSettings::class)->name('settings');
+        Route::get('/settings', \App\Livewire\Admin\Settings\SiteSettings::class)->name('settings')->middleware('admin.permission:settings.view');
     });
 
 });

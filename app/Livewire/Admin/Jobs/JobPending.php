@@ -35,7 +35,7 @@ class JobPending extends Component
             'admin_approved' => true,
             'approved_at' => now(),
             'approved_by_admin_id' => Auth::guard('admin')->id(),
-            'expires_at' => now()->addDays($job->posting_duration_days),
+            'expires_at' => now()->addDays((int) $job->posting_duration_days),
         ]);
 
         AdminActionLog::create([
@@ -95,7 +95,7 @@ class JobPending extends Component
                 'admin_approved' => true,
                 'approved_at' => now(),
                 'approved_by_admin_id' => Auth::guard('admin')->id(),
-                'expires_at' => now()->addDays($job->posting_duration_days),
+                'expires_at' => now()->addDays((int) $job->posting_duration_days),
             ]);
             AdminActionLog::create([
                 'admin_id' => Auth::guard('admin')->id(),

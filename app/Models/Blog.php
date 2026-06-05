@@ -29,7 +29,7 @@ class Blog extends Model
     {
         static::creating(function (self $blog) {
             if (empty($blog->slug)) {
-                $blog->slug = Str::slug($blog->title);
+                $blog->slug = Str::slug($blog->title) ?: 'blog-' . Str::random(8);
             }
         });
 

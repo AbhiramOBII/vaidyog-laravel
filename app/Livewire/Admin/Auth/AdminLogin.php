@@ -45,7 +45,7 @@ class AdminLogin extends Component
 
             session()->regenerate();
 
-            $this->redirect(route('admin.dashboard'), navigate: true);
+            $this->redirect(route('admin.dashboard'));
         } else {
             RateLimiter::hit($key, 60);
             $this->errorMessage = 'Invalid credentials or your account is inactive.';

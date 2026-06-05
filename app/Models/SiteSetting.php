@@ -14,10 +14,20 @@ class SiteSetting extends Model
      */
     public static function get(string $key, mixed $default = null): mixed
     {
-        return Cache::rememberForever("site_setting.{$key}", function () use ($key, $default) {
-            $setting = static::where('key', $key)->first();
-            return $setting?->value ?? $default;
-        });
+        $cacheKey = "site_setting.{$key}";
+
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
+        }
+
+        $setting = static::where('key', $key)->first();
+
+        if ($setting !== null && $setting->value !== null) {
+            Cache::forever($cacheKey, $setting->value);
+            return $setting->value;
+        }
+
+        return $default;
     }
 
     /**

@@ -64,7 +64,9 @@
                                 @else
                                     <button wire:click="markAsUnread({{ $fb->id }})" class="px-2 py-1 text-xs font-medium text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded transition-colors">Unread</button>
                                 @endif
+                                @if(auth('admin')->user()->hasPermission('feedbacks.delete'))
                                 <button wire:click="delete({{ $fb->id }})" wire:confirm="Delete this feedback?" class="px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors">Delete</button>
+                                @endif
                             </div>
                         </td>
                     </tr>

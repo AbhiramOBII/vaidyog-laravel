@@ -10,10 +10,12 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                 Export CSV
             </button>
+            @if(auth('admin')->user()->hasPermission('recruiters.create'))
             <a href="{{ route('admin.recruiters.create') }}" wire:navigate class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-[#464d79] hover:bg-[#3a4169] rounded-lg shadow-sm transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
                 Add Recruiter
             </a>
+            @endif
         </div>
     </div>
 
@@ -149,13 +151,21 @@
                                 @endif
                             </td>
                             <td class="px-4 py-3">
+                                @if(auth('admin')->user()->hasPermission('recruiters.edit'))
                                 <button wire:click="toggleFeatured('{{ $rec->id }}')" wire:confirm="Toggle featured status?" class="text-neutral-400 hover:text-amber-500 transition-colors">
+                                @else
+                                <span class="text-neutral-400">
+                                @endif
                                     @if($profile?->is_featured)
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-amber-500" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                     @else
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
                                     @endif
+                                @if(auth('admin')->user()->hasPermission('recruiters.edit'))
                                 </button>
+                                @else
+                                </span>
+                                @endif
                             </td>
                             <td class="px-4 py-3">
                                 @if($rec->auth_provider)
@@ -173,14 +183,16 @@
                                     <a href="{{ route('admin.recruiters.show', $rec) }}" wire:navigate title="View" class="w-7 h-7 inline-flex items-center justify-center rounded text-neutral-400 hover:text-[#464d79] hover:bg-[#464d79]/10 transition-colors">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
                                     </a>
+                                    @if(auth('admin')->user()->hasPermission('recruiters.edit'))
                                     <a href="{{ route('admin.recruiters.edit', $rec) }}" wire:navigate title="Edit" class="w-7 h-7 inline-flex items-center justify-center rounded text-neutral-400 hover:text-[#464d79] hover:bg-[#464d79]/10 transition-colors">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
                                     </a>
-                                    @if($rec->status === \App\Enums\UserStatusEnum::Active)
+                                    @endif
+                                    @if(auth('admin')->user()->hasPermission('recruiters.edit') && $rec->status === \App\Enums\UserStatusEnum::Active)
                                         <button wire:click="changeStatus('{{ $rec->id }}', 'blocked')" wire:confirm="Block this recruiter?" title="Block" class="w-7 h-7 inline-flex items-center justify-center rounded text-neutral-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z" clip-rule="evenodd"/></svg>
                                         </button>
-                                    @else
+                                    @elseif(auth('admin')->user()->hasPermission('recruiters.edit'))
                                         <button wire:click="changeStatus('{{ $rec->id }}', 'active')" wire:confirm="Activate this recruiter?" title="Activate" class="w-7 h-7 inline-flex items-center justify-center rounded text-neutral-400 hover:text-[#4ab098] hover:bg-[#4ab098]/10 transition-colors">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                                         </button>

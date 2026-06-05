@@ -10,17 +10,17 @@ class RazorpayService
 
     private function getKeyId(): string
     {
-        return SiteSetting::get('razorpay_key_id', config('services.razorpay.key_id', ''));
+        return (string) (SiteSetting::get('razorpay_key_id') ?? config('services.razorpay.key_id') ?? '');
     }
 
     private function getKeySecret(): string
     {
-        return SiteSetting::get('razorpay_key_secret', config('services.razorpay.key_secret', ''));
+        return (string) (SiteSetting::get('razorpay_key_secret') ?? config('services.razorpay.key_secret') ?? '');
     }
 
     private function getWebhookSecret(): string
     {
-        return SiteSetting::get('razorpay_webhook_secret', config('services.razorpay.webhook_secret', ''));
+        return (string) (SiteSetting::get('razorpay_webhook_secret') ?? config('services.razorpay.webhook_secret') ?? '');
     }
 
     private function getApi()

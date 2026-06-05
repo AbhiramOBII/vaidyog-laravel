@@ -2,6 +2,7 @@
 
 namespace App\Livewire\JobSeeker\Profile;
 
+use App\Services\Subscription\SubscriptionService;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -26,6 +27,13 @@ class ProfileShow extends Component
             if ($profile->certifications()->count() === 0) $incompleteSections[] = 'Certifications';
         }
 
-        return view('livewire.job-seeker.profile.profile-show', compact('profile', 'incompleteSections'));
+        $subscriptionService = app(SubscriptionService::class);
+        $activeSub = $subscriptionService->getActivePlanForJobSeeker($user);
+        $remaining = $subscriptionService->getRemainingApplicationsThisMonth($user);
+        $recentPayments = $user->payments()->latest()->limit(3)->get();
+
+        return view('livewire.job-seeker.profile.profile-show', compact(
+            'profile', 'incompleteSections', 'activeSub', 'remaining', 'recentPayments'
+        ));
     }
 }

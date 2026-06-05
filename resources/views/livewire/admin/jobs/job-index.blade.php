@@ -2,10 +2,12 @@
     {{-- Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Job Postings</h1>
+        @if(auth('admin')->user()->hasPermission('jobs.create'))
         <a href="{{ route('admin.jobs.create') }}" wire:navigate class="inline-flex items-center gap-2 h-10 px-5 bg-[#464d79] hover:bg-[#3a4169] text-white font-semibold rounded-lg text-sm transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
             Post New Job
         </a>
+        @endif
     </div>
 
     {{-- Stats --}}
@@ -71,7 +73,11 @@
                             <span class="text-xs px-2 py-0.5 rounded-full font-medium @if($color==='green') bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 @elseif($color==='amber') bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 @elseif($color==='red') bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 @else bg-neutral-100 text-neutral-600 dark:bg-neutral-700 dark:text-neutral-300 @endif">{{ $st }}</span>
                         </td>
                         <td class="px-4 py-3 text-center">
+                            @if(auth('admin')->user()->hasPermission('jobs.edit'))
                             <button wire:click="toggleFeatured('{{ $job->id }}')" class="text-lg {{ $job->is_featured ? 'text-amber-500' : 'text-neutral-300 hover:text-amber-400' }} transition-colors" title="Toggle featured">&#9733;</button>
+                            @else
+                            <span class="text-lg {{ $job->is_featured ? 'text-amber-500' : 'text-neutral-300' }}">&#9733;</span>
+                            @endif
                         </td>
                         <td class="px-4 py-3 text-neutral-500 text-xs">{{ $job->created_at->format('M d, Y') }}</td>
                         <td class="px-4 py-3 text-right">
@@ -79,20 +85,26 @@
                                 <a href="{{ route('admin.jobs.show', $job) }}" wire:navigate class="p-1.5 rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 text-neutral-500" title="View">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
                                 </a>
+                                @if(auth('admin')->user()->hasPermission('jobs.edit'))
                                 <a href="{{ route('admin.jobs.edit', $job) }}" wire:navigate class="p-1.5 rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 text-neutral-500" title="Edit">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
                                 </a>
-                                @if(!$job->admin_approved && !$job->rejection_reason)
+                                @endif
+                                @if(auth('admin')->user()->hasPermission('jobs.approve') && !$job->admin_approved && !$job->rejection_reason)
                                 <button wire:click="approve('{{ $job->id }}')" class="p-1.5 rounded hover:bg-green-50 text-green-600" title="Approve">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                                 </button>
                                 @endif
+                                @if(auth('admin')->user()->hasPermission('jobs.edit'))
                                 <button wire:click="toggleActive('{{ $job->id }}')" class="p-1.5 rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 {{ $job->is_active ? 'text-green-500' : 'text-neutral-400' }}" title="{{ $job->is_active ? 'Disable' : 'Enable' }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"/></svg>
                                 </button>
+                                @endif
+                                @if(auth('admin')->user()->hasPermission('jobs.delete'))
                                 <button wire:click="moveToBin('{{ $job->id }}')" wire:confirm="Move to bin?" class="p-1.5 rounded hover:bg-red-50 text-neutral-500 hover:text-red-500" title="Bin">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
                                 </button>
+                                @endif
                             </div>
                         </td>
                     </tr>

@@ -101,7 +101,10 @@ class JobPosting extends Model
     {
         static::creating(function (JobPosting $job) {
             if (empty($job->slug)) {
-                $base = Str::slug($job->job_title . ' ' . ($job->location_city ?? ''));
+                $base = Str::slug(($job->job_title ?? '') . ' ' . ($job->location_city ?? ''));
+                if (empty($base)) {
+                    $base = 'job-' . Str::random(8);
+                }
                 $slug = $base;
                 $i = 1;
                 while (static::withTrashed()->where('slug', $slug)->exists()) {

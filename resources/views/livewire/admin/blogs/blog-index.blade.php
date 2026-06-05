@@ -2,7 +2,9 @@
     {{-- Header --}}
     <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Blog Posts</h1>
+        @if(auth('admin')->user()->hasPermission('blogs.create'))
         <a href="{{ route('admin.blogs.create') }}" class="px-4 py-2 text-sm font-medium text-white bg-[#464d79] rounded-lg hover:bg-[#3a4166] transition-colors">+ New Post</a>
+        @endif
     </div>
 
     @if (session('success'))
@@ -64,8 +66,12 @@
                         <td class="px-4 py-3 text-neutral-500 dark:text-neutral-400">{{ $blog->published_at?->format('d M Y') ?? '—' }}</td>
                         <td class="px-4 py-3 text-right">
                             <div class="flex items-center justify-end gap-2">
+                                @if(auth('admin')->user()->hasPermission('blogs.edit'))
                                 <a href="{{ route('admin.blogs.edit', $blog->id) }}" class="px-2 py-1 text-xs font-medium text-[#464d79] hover:bg-[#464d79]/10 rounded transition-colors">Edit</a>
+                                @endif
+                                @if(auth('admin')->user()->hasPermission('blogs.delete'))
                                 <button wire:click="delete({{ $blog->id }})" wire:confirm="Delete this blog post?" class="px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors">Delete</button>
+                                @endif
                             </div>
                         </td>
                     </tr>

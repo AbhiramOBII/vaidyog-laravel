@@ -34,7 +34,7 @@ class Event extends Model
     {
         static::creating(function (self $event) {
             if (empty($event->slug)) {
-                $event->slug = Str::slug($event->title);
+                $event->slug = Str::slug($event->title) ?: 'event-' . Str::random(8);
             }
         });
 

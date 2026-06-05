@@ -1,7 +1,9 @@
 <div>
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Recruiter Plans</h1>
+        @if(auth('admin')->user()->hasPermission('plans.manage'))
         <a href="{{ route('admin.plans.recruiter.create') }}" wire:navigate class="h-9 px-4 inline-flex items-center gap-1.5 rounded-lg text-sm font-medium bg-[#464d79] text-white hover:bg-[#464d79]/90 transition-colors">+ New Plan</a>
+        @endif
     </div>
 
     {{-- Tab bar --}}
@@ -26,8 +28,10 @@
             </div>
             <p class="text-xs text-neutral-500 mb-3">{{ $plan->subscriptions()->where('status', 'active')->count() }} active subscribers</p>
             <div class="flex items-center gap-2">
+                @if(auth('admin')->user()->hasPermission('plans.manage'))
                 <a href="{{ route('admin.plans.recruiter.edit', $plan) }}" wire:navigate class="text-xs font-medium text-[#464d79] hover:underline">Edit</a>
                 <button wire:click="toggleActive({{ $plan->id }})" class="text-xs font-medium {{ $plan->is_active ? 'text-amber-600' : 'text-green-600' }}">{{ $plan->is_active ? 'Deactivate' : 'Activate' }}</button>
+                @endif
             </div>
         </div>
         @empty

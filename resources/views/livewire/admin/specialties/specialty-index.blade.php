@@ -1,9 +1,11 @@
 <div class="p-6">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Specialties</h1>
+        @if(auth('admin')->user()->hasPermission('specialties.manage'))
         <button wire:click="create" class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
             + Add Specialty
         </button>
+        @endif
     </div>
 
     @if(session('success'))
@@ -50,8 +52,10 @@
                         </button>
                     </td>
                     <td class="px-4 py-3 text-right">
+                        @if(auth('admin')->user()->hasPermission('specialties.manage'))
                         <button wire:click="edit({{ $specialty->id }})" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium mr-3">Edit</button>
                         <button wire:click="delete({{ $specialty->id }})" wire:confirm="Delete '{{ $specialty->name }}'?" class="text-red-500 hover:text-red-700 text-sm font-medium">Delete</button>
+                        @endif
                     </td>
                 </tr>
                 @empty

@@ -2,7 +2,9 @@
     {{-- Header --}}
     <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Events</h1>
+        @if(auth('admin')->user()->hasPermission('events.create'))
         <a href="{{ route('admin.events.create') }}" class="px-4 py-2 text-sm font-medium text-white bg-[#464d79] rounded-lg hover:bg-[#3a4166] transition-colors">+ New Event</a>
+        @endif
     </div>
 
     @if (session('success'))
@@ -75,8 +77,12 @@
                         </td>
                         <td class="px-4 py-3 text-right">
                             <div class="flex items-center justify-end gap-2">
+                                @if(auth('admin')->user()->hasPermission('events.edit'))
                                 <a href="{{ route('admin.events.edit', $event->id) }}" class="px-2 py-1 text-xs font-medium text-[#464d79] hover:bg-[#464d79]/10 rounded transition-colors">Edit</a>
+                                @endif
+                                @if(auth('admin')->user()->hasPermission('events.delete'))
                                 <button wire:click="delete({{ $event->id }})" wire:confirm="Delete this event?" class="px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors">Delete</button>
+                                @endif
                             </div>
                         </td>
                     </tr>

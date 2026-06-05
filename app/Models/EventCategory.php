@@ -25,7 +25,7 @@ class EventCategory extends Model
     {
         static::creating(function (self $category) {
             if (empty($category->slug)) {
-                $category->slug = Str::slug($category->title);
+                $category->slug = Str::slug($category->title) ?: 'category-' . Str::random(8);
             }
         });
 

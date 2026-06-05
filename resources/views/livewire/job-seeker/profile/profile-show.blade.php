@@ -76,6 +76,73 @@
                         </a>
                     @endif
                 </div>
+
+                {{-- Billing & Subscription --}}
+                <div class="bg-white rounded-xl border border-neutral-200 p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-semibold text-neutral-700">Billing & Plan</h3>
+                        <a href="{{ route('jobseeker.plan') }}" class="text-xs text-[#464d79] hover:underline">Manage</a>
+                    </div>
+
+                    @if($activeSub)
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-sm font-bold text-neutral-900">{{ $activeSub->plan_name }}</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full {{ $activeSub->ranking->getBadgeClasses() }}">{{ $activeSub->ranking->getLabel() }}</span>
+                    </div>
+
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between">
+                            <span class="text-neutral-500">Applications</span>
+                            <span class="font-medium text-neutral-800">
+                                @if($remaining === 'unlimited')
+                                    Unlimited
+                                @else
+                                    {{ $remaining }} remaining
+                                @endif
+                            </span>
+                        </div>
+                        @if($remaining !== 'unlimited' && $activeSub->applications_per_month)
+                        @php $used = $activeSub->applications_per_month - $remaining; $pct = ($used / $activeSub->applications_per_month) * 100; @endphp
+                        <div class="w-full h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+                            <div class="h-full rounded-full transition-all {{ $pct > 80 ? 'bg-red-500' : ($pct > 50 ? 'bg-amber-500' : 'bg-[#4ab098]') }}" style="width: {{ min($pct, 100) }}%"></div>
+                        </div>
+                        @endif
+                        <div class="flex justify-between">
+                            <span class="text-neutral-500">Expires</span>
+                            <span class="font-medium text-neutral-800">{{ $activeSub->expires_at?->format('M j, Y') ?? 'Never' }}</span>
+                        </div>
+                    </div>
+                    @else
+                    <div class="text-center py-2">
+                        <span class="text-sm font-bold text-neutral-900">Basic (Free)</span>
+                        <p class="text-xs text-neutral-500 mt-1">{{ $remaining }} apps/month</p>
+                    </div>
+                    @endif
+
+                    <div class="mt-4 pt-3 border-t border-neutral-100">
+                        <a href="{{ route('plans.index') }}" class="w-full flex items-center justify-center gap-2 px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors" style="background: linear-gradient(90deg, #464d79 0%, #48B098 100%);">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                            {{ $activeSub ? 'Upgrade Plan' : 'View Plans' }}
+                        </a>
+                    </div>
+
+                    @if($recentPayments->isNotEmpty())
+                    <div class="mt-4 pt-3 border-t border-neutral-100">
+                        <h4 class="text-xs font-semibold text-neutral-500 uppercase mb-2">Recent Payments</h4>
+                        <div class="space-y-2">
+                            @foreach($recentPayments as $payment)
+                            <div class="flex items-center justify-between text-xs">
+                                <div>
+                                    <span class="font-medium text-neutral-800">₹{{ number_format($payment->amount) }}</span>
+                                    <span class="text-neutral-400 ml-1">{{ $payment->paid_at?->format('M j') ?? 'Pending' }}</span>
+                                </div>
+                                <span class="px-1.5 py-0.5 rounded text-[10px] font-medium {{ $payment->status->getBadgeClasses() }}">{{ $payment->status->label() }}</span>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+                </div>
             </div>
 
             {{-- Right Main Content --}}

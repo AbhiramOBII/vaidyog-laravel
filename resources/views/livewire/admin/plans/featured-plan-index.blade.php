@@ -1,7 +1,9 @@
 <div>
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Featured Job Plans</h1>
+        @if(auth('admin')->user()->hasPermission('plans.manage'))
         <button wire:click="create" class="h-9 px-4 inline-flex items-center gap-1.5 rounded-lg text-sm font-medium bg-[#464d79] text-white hover:bg-[#464d79]/90 transition-colors">+ New Plan</button>
+        @endif
     </div>
 
     <div class="bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 overflow-hidden">
@@ -25,8 +27,10 @@
                     <td class="px-4 py-3">{{ $plan->featured_duration_days }}</td>
                     <td class="px-4 py-3"><span class="w-2 h-2 rounded-full inline-block {{ $plan->is_active ? 'bg-green-500' : 'bg-neutral-300' }}"></span></td>
                     <td class="px-4 py-3 flex gap-2">
+                        @if(auth('admin')->user()->hasPermission('plans.manage'))
                         <button wire:click="edit({{ $plan->id }})" class="text-xs text-[#464d79] hover:underline">Edit</button>
                         <button wire:click="delete({{ $plan->id }})" wire:confirm="Delete this plan?" class="text-xs text-red-500 hover:underline">Delete</button>
+                        @endif
                     </td>
                 </tr>
                 @empty

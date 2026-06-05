@@ -1,4 +1,7 @@
-<a href="{{ route('jobs.show', $job->slug ?? $job->id) }}" class="group block bg-white rounded-xl border border-gray-200 hover:border-primary-200 p-5 transition-all duration-200 hover:shadow-md {{ ($featured ?? false) ? 'ring-1 ring-amber-200' : '' }}">
+@if(!($job->slug ?: $job->id))
+    {{-- Skip jobs without a valid slug or ID --}}
+@else
+<a href="{{ route('jobs.show', $job->slug ?: $job->id) }}" class="group block bg-white rounded-xl border border-gray-200 hover:border-primary-200 p-5 transition-all duration-200 hover:shadow-md {{ ($featured ?? false) ? 'ring-1 ring-amber-200' : '' }}">
     @php $logo = $job->recruiter?->profile?->logo_path; @endphp
 
     {{-- Row 1: Logo + Hospital Name + Status --}}
@@ -78,3 +81,4 @@
         </span>
     </div>
 </a>
+@endif

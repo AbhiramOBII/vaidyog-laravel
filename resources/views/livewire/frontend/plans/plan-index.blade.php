@@ -6,7 +6,11 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach($plans as $plan)
-            <div class="relative bg-white rounded-2xl border {{ $plan->is_recommended ? 'border-teal-400 ring-2 ring-teal-100' : 'border-gray-200' }} flex flex-col overflow-hidden shadow-sm hover:shadow-lg transition-shadow" x-data="{ tab: 'monthly' }">
+            @php
+                $firstOpt = $plan->options->first();
+                $optionMap = $plan->options->mapWithKeys(fn($o) => [$o->duration_type->value => $o->slug])->toJson();
+            @endphp
+            <div class="relative bg-white rounded-2xl border {{ $plan->is_recommended ? 'border-teal-400 ring-2 ring-teal-100' : 'border-gray-200' }} flex flex-col overflow-hidden shadow-sm hover:shadow-lg transition-shadow" x-data="{ tab: '{{ $firstOpt?->duration_type->value ?? 'monthly' }}', optionMap: {{ $optionMap }}, get selectedOptionId() { return this.optionMap[this.tab]; } }">
                 @if($plan->is_recommended)
                 <span class="absolute -top-0 left-0 right-0 text-center text-xs bg-gradient-to-r from-[#464d79] to-[#48B098] text-white px-4 py-1.5 font-semibold">Most Popular</span>
                 @endif
@@ -72,7 +76,7 @@
                         @elseif($plan->options->first()?->price == 0)
                         <a href="{{ route('jobseeker.plan') }}" class="w-full h-11 rounded-xl text-sm font-semibold inline-flex items-center justify-center border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors">View Plan</a>
                         @else
-                        <a href="#" class="w-full h-11 rounded-xl text-sm font-semibold inline-flex items-center justify-center text-white transition-colors" style="background: linear-gradient(90deg, #464d79 0%, #48B098 100%);">Upgrade</a>
+                        <a :href="'/checkout/' + selectedOptionId" class="w-full h-11 rounded-xl text-sm font-semibold inline-flex items-center justify-center text-white transition-colors" style="background: linear-gradient(90deg, #464d79 0%, #48B098 100%);">Upgrade</a>
                         @endif
                     @else
                     <a href="{{ route('jobseeker.register') }}" class="w-full h-11 rounded-xl text-sm font-semibold inline-flex items-center justify-center text-white transition-colors" style="background: linear-gradient(90deg, #464d79 0%, #48B098 100%);">Get Started</a>

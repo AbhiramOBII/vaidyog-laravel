@@ -29,7 +29,7 @@ class News extends Model
     {
         static::creating(function (self $news) {
             if (empty($news->slug)) {
-                $news->slug = Str::slug($news->title);
+                $news->slug = Str::slug($news->title) ?: 'news-' . Str::random(8);
             }
         });
 

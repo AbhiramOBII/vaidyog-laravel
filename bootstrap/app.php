@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth.admin' => \App\Http\Middleware\AdminAuthenticate::class,
             'guest.admin' => \App\Http\Middleware\AdminGuest::class,
+            'admin.permission' => \App\Http\Middleware\CheckAdminPermission::class,
             'recruiter.profile' => \App\Http\Middleware\EnsureRecruiterProfileCompleted::class,
         ]);
 
