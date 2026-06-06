@@ -19,30 +19,32 @@
 @section('og_description', $seoDesc)
 @section('og_image', $seoImage)
 
+@php
+    $schemaData = array_filter([
+        '@context'      => 'https://schema.org',
+        '@type'         => 'Person',
+        'name'          => $seoName,
+        'url'           => $seoUrl,
+        'image'         => $seoImage,
+        'jobTitle'      => $seoDesignation ?: null,
+        'description'   => \Illuminate\Support\Str::limit(strip_tags($profile->about ?? ''), 200) ?: null,
+        'address'       => array_filter([
+            '@type'           => 'PostalAddress',
+            'addressLocality' => $profile->city,
+            'addressRegion'   => $profile->state,
+            'addressCountry'  => $profile->country ?? 'IN',
+        ]),
+        'knowsAbout'    => $profile->specialty?->name,
+        'hasOccupation' => !empty($profile->key_skills) ? [
+            '@type'  => 'Occupation',
+            'name'   => $seoDesignation,
+            'skills' => implode(', ', $profile->key_skills),
+        ] : null,
+    ]);
+@endphp
+
 @push('schema')
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "{{ $seoName }}",
-  "url": "{{ $seoUrl }}",
-  "image": "{{ $seoImage }}",
-  "jobTitle": "{{ $seoDesignation }}",
-  "description": "{{ Str::limit(strip_tags($profile->about ?? ''), 200) }}",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "{{ $profile->city }}",
-    "addressRegion": "{{ $profile->state }}",
-    "addressCountry": "{{ $profile->country ?? 'IN' }}"
-  }@if($profile->specialty),
-  "knowsAbout": "{{ $profile->specialty->name }}"@endif@if(!empty($profile->key_skills)),
-  "hasOccupation": {
-    "@type": "Occupation",
-    "name": "{{ $seoDesignation }}",
-    "skills": "{{ implode(', ', $profile->key_skills) }}"
-  }@endif
-}
-</script>
+<script type="application/ld+json">{!! json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}</script>
 @endpush
 
 <div class="max-w-4xl mx-auto py-8 px-4 sm:px-6">
