@@ -207,10 +207,8 @@ class ProfileEdit extends Component
             'nationality' => $this->nationality,
         ]);
 
-        // Generate profile slug if not set
-        if (!$profile->profile_slug) {
-            $profile->update(['profile_slug' => $profile->generateProfileSlug()]);
-        }
+        // Always regenerate slug so salutation/name changes are reflected in the URL
+        $profile->update(['profile_slug' => $profile->generateProfileSlug()]);
 
         $this->personalSaved = true;
         $this->dispatch('saved-personal');
