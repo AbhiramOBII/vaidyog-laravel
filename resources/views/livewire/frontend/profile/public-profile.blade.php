@@ -1,3 +1,50 @@
+@php
+    $seoName        = $profile->getFullName();
+    $seoLocation    = collect([$profile->city, $profile->state])->filter()->join(', ');
+    $seoDesignation = $profile->designation;
+    $seoTitle       = $seoName
+        . ($seoDesignation ? ' — ' . $seoDesignation : '')
+        . ($seoLocation    ? ' in ' . $seoLocation   : '')
+        . ' | Vaidyog';
+    $seoDesc = $profile->about
+        ? $seoName . ' — ' . \Illuminate\Support\Str::limit(strip_tags($profile->about), 140, '...')
+        : $seoName . ($seoDesignation ? ', ' . $seoDesignation : '') . ($seoLocation ? ' based in ' . $seoLocation : '') . '. View full profile on Vaidyog.';
+    $seoImage = $profile->getProfilePictureUrl();
+    $seoUrl   = route('profile.public', $profile->profile_slug);
+@endphp
+
+@section('title', $seoTitle)
+@section('description', $seoDesc)
+@section('og_title', $seoTitle)
+@section('og_description', $seoDesc)
+@section('og_image', $seoImage)
+
+@push('schema')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "{{ $seoName }}",
+  "url": "{{ $seoUrl }}",
+  "image": "{{ $seoImage }}",
+  "jobTitle": "{{ $seoDesignation }}",
+  "description": "{{ Str::limit(strip_tags($profile->about ?? ''), 200) }}",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "{{ $profile->city }}",
+    "addressRegion": "{{ $profile->state }}",
+    "addressCountry": "{{ $profile->country ?? 'IN' }}"
+  }@if($profile->specialty),
+  "knowsAbout": "{{ $profile->specialty->name }}"@endif@if(!empty($profile->key_skills)),
+  "hasOccupation": {
+    "@type": "Occupation",
+    "name": "{{ $seoDesignation }}",
+    "skills": "{{ implode(', ', $profile->key_skills) }}"
+  }@endif
+}
+</script>
+@endpush
+
 <div class="max-w-4xl mx-auto py-8 px-4 sm:px-6">
 
     {{-- Profile Header / Banner --}}
