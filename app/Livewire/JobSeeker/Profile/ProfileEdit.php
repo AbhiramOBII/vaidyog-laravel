@@ -2,10 +2,14 @@
 
 namespace App\Livewire\JobSeeker\Profile;
 
+use App\Models\City;
+use App\Models\Country;
 use App\Models\Designation;
 use App\Models\JobSeekerProfile;
 use App\Models\Specialty;
+use App\Models\State;
 use App\Models\SubDesignation;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -18,6 +22,7 @@ class ProfileEdit extends Component
     use WithFileUploads;
 
     // Personal Info
+    public string $salutation = '';
     public string $first_name = '';
     public string $last_name = '';
     public ?string $date_of_birth = null;
@@ -25,8 +30,9 @@ class ProfileEdit extends Component
     public string $phone = '';
     public string $email = '';
     public string $nationality = 'Indian';
-    public string $city = '';
+    public string $country = 'India';
     public string $state = '';
+    public string $city = '';
     public string $pincode = '';
 
     // Professional Info
@@ -67,6 +73,7 @@ class ProfileEdit extends Component
         $profile = $user->jobSeekerProfile;
 
         if ($profile) {
+            $this->salutation = $profile->salutation ?? '';
             $this->first_name = $profile->first_name ?? '';
             $this->last_name = $profile->last_name ?? '';
             $this->date_of_birth = $profile->date_of_birth?->format('Y-m-d');
@@ -74,8 +81,9 @@ class ProfileEdit extends Component
             $this->phone = $profile->phone ?? $user->phone ?? '';
             $this->email = $profile->email ?? $user->email ?? '';
             $this->nationality = $profile->nationality ?? 'Indian';
-            $this->city = $profile->city ?? '';
+            $this->country = $profile->country ?? 'India';
             $this->state = $profile->state ?? '';
+            $this->city = $profile->city ?? '';
             $this->pincode = $profile->pincode ?? '';
             $this->designation = $profile->designation ?? '';
             $this->subdesignation = $profile->subdesignation ?? '';
@@ -101,6 +109,17 @@ class ProfileEdit extends Component
         $this->jobCategories = \App\Models\JobCategory::orderBy('name')->pluck('name', 'slug')->toArray();
         $this->loadJobSubcategories();
         $this->specialtiesList = Specialty::active()->ordered()->get()->toArray();
+    }
+
+    public function updatedCountry(): void
+    {
+        $this->state = '';
+        $this->city = '';
+    }
+
+    public function updatedState(): void
+    {
+        $this->city = '';
     }
 
     public function updatedDesignation(): void
@@ -159,30 +178,39 @@ class ProfileEdit extends Component
     public function savePersonalInfo(): void
     {
         $validated = $this->validate([
+            'salutation' => 'nullable|in:Mr,Mrs,Ms,Dr,Prof',
             'first_name' => 'required|max:60',
             'last_name' => 'required|max:60',
             'date_of_birth' => 'required|date|before:today',
             'gender' => 'nullable|in:male,female,other,prefer_not_to_say',
             'phone' => 'required|digits:10',
-            'city' => 'required|max:100',
+            'country' => 'required|max:100',
             'state' => 'required|max:100',
+            'city' => 'required|max:100',
             'pincode' => 'nullable|digits:6',
             'nationality' => 'required|max:60',
         ]);
 
         $profile = $this->getOrCreateProfile();
         $profile->update([
+            'salutation' => $this->salutation ?: null,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'date_of_birth' => $this->date_of_birth,
             'gender' => $this->gender ?: null,
             'phone' => $this->phone,
             'email' => $this->email,
-            'city' => $this->city,
+            'country' => $this->country,
             'state' => $this->state,
+            'city' => $this->city,
             'pincode' => $this->pincode ?: null,
             'nationality' => $this->nationality,
         ]);
+
+        // Generate profile slug if not set
+        if (!$profile->profile_slug) {
+            $profile->update(['profile_slug' => $profile->generateProfileSlug()]);
+        }
 
         $this->personalSaved = true;
         $this->dispatch('saved-personal');
@@ -295,13 +323,32 @@ class ProfileEdit extends Component
         ]);
     }
 
+    #[Computed]
+    public function countries()
+    {
+        return Country::active()->orderBy('sort_order')->orderBy('name')->get();
+    }
+
+    #[Computed]
+    public function states()
+    {
+        if (!$this->country) return collect();
+        return State::active()
+            ->whereHas('country', fn($q) => $q->where('name', $this->country))
+            ->orderBy('sort_order')->orderBy('name')->get();
+    }
+
+    #[Computed]
+    public function cities()
+    {
+        if (!$this->state) return collect();
+        return City::active()
+            ->whereHas('state', fn($q) => $q->where('name', $this->state))
+            ->orderBy('sort_order')->orderBy('name')->get();
+    }
+
     public function render()
     {
-        return view('livewire.job-seeker.profile.profile-edit', [
-            'indianStates' => array_merge(
-                config('indian_states.states', []),
-                config('indian_states.union_territories', [])
-            ),
-        ]);
+        return view('livewire.job-seeker.profile.profile-edit');
     }
 }

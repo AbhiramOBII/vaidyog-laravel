@@ -36,8 +36,22 @@
                     </h2>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {{-- Salutation --}}
+                        <div>
+                            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">Salutation</label>
+                            <select wire:model="salutation" class="w-full h-10 px-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm text-neutral-700 dark:text-neutral-300 focus:outline-none focus:border-[#464d79] focus:ring-2 focus:ring-[#464d79]/20 transition-all">
+                                <option value="">Select</option>
+                                <option value="Mr">Mr</option>
+                                <option value="Mrs">Mrs</option>
+                                <option value="Ms">Ms</option>
+                                <option value="Dr">Dr</option>
+                                <option value="Prof">Prof</option>
+                            </select>
+                            @error('salutation') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
+
                         {{-- Name --}}
-                        <div class="sm:col-span-2">
+                        <div>
                             <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">Full Name <span class="text-red-500">*</span></label>
                             <input wire:model="name" type="text" placeholder="Enter full name" class="w-full h-10 px-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm placeholder-neutral-400 focus:outline-none focus:border-[#464d79] focus:ring-2 focus:ring-[#464d79]/20 transition-all @error('name') border-red-400 @enderror"/>
                             @error('name') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror

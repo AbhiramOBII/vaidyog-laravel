@@ -67,7 +67,7 @@
                 <tr class="hover:bg-neutral-50 dark:hover:bg-neutral-900/50">
                     <td class="px-3 py-3 text-center"><span class="inline-flex px-2 py-0.5 rounded text-xs font-bold {{ $app->ranking->getBadgeClasses() }}">{{ $app->ranking->value }}</span></td>
                     <td class="px-4 py-3">
-                        <p class="font-medium text-neutral-900 dark:text-white">{{ $app->applicant?->name }}</p>
+                        <p class="font-medium text-neutral-900 dark:text-white">{{ $app->applicant?->jobSeekerProfile?->getFullName() ?? $app->applicant?->name }}</p>
                         <p class="text-xs text-neutral-500">{{ $app->applicant?->phone }}</p>
                     </td>
                     <td class="px-4 py-3 text-neutral-500 text-xs">{{ $app->applicant?->jobSeekerProfile?->category_name ?? '—' }}</td>

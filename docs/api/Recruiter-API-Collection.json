@@ -1,0 +1,337 @@
+{
+  "info": {
+    "name": "Vaidyog — Recruiter API",
+    "_postman_id": "vaidyog-recruiter-api-v1",
+    "description": "Complete API collection for Recruiters (Medical Institutions) on the Vaidyog healthcare jobs platform.\n\n**Auth:** After calling Login or Register, the token is automatically saved to `{{token}}`.\n\nAll protected routes require: `Authorization: Bearer {{token}}`",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "base_url",    "value": "http://localhost:8000", "type": "string" },
+    { "key": "token",       "value": "",                     "type": "string" },
+    { "key": "job_id",      "value": "",                     "type": "string" },
+    { "key": "app_id",      "value": "",                     "type": "string" },
+    { "key": "candidate_id","value": "",                     "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "event": [{ "listen": "test", "script": { "exec": ["var res = pm.response.json();", "if (res.data && res.data.token) pm.collectionVariables.set('token', res.data.token);"], "type": "text/javascript" } }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Apollo Hospitals\",\n  \"email\": \"hr@apollohospitals.com\",\n  \"phone\": \"9988776655\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/recruiter/register", "host": ["{{base_url}}"], "path": ["api", "recruiter", "register"] }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [{ "listen": "test", "script": { "exec": ["var res = pm.response.json();", "if (res.data && res.data.token) pm.collectionVariables.set('token', res.data.token);"], "type": "text/javascript" } }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"hr@apollohospitals.com\",\n  \"password\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/recruiter/login", "host": ["{{base_url}}"], "path": ["api", "recruiter", "login"] }
+          }
+        },
+        {
+          "name": "Me (Current Recruiter)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/recruiter/me", "host": ["{{base_url}}"], "path": ["api", "recruiter", "me"] }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/recruiter/logout", "host": ["{{base_url}}"], "path": ["api", "recruiter", "logout"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/recruiter/dashboard", "host": ["{{base_url}}"], "path": ["api", "recruiter", "dashboard"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/recruiter/profile", "host": ["{{base_url}}"], "path": ["api", "recruiter", "profile"] }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"institution_name\": \"Apollo Hospitals\",\n  \"med_type\": \"hospital\",\n  \"industry_type\": \"Healthcare\",\n  \"contact_person_name\": \"Ramesh Gupta\",\n  \"contact_person_email\": \"ramesh@apollohospitals.com\",\n  \"contact_person_phone\": \"9988776655\",\n  \"description\": \"Apollo Hospitals is a leading healthcare provider in India with 70+ hospitals.\",\n  \"employee_count\": 10000,\n  \"specialties\": [\"Cardiology\", \"Oncology\", \"Neurology\"],\n  \"accreditations\": [\"NABH\", \"JCI\"],\n  \"address_line1\": \"21 Greams Lane\",\n  \"address_line2\": \"Off Greams Road\",\n  \"country\": \"India\",\n  \"state\": \"Tamil Nadu\",\n  \"city\": \"Chennai\",\n  \"pincode\": \"600006\",\n  \"website_url\": \"https://www.apollohospitals.com\",\n  \"social_linkedin\": \"https://linkedin.com/company/apollo-hospitals\",\n  \"additional_information\": \"Open to freshers and experienced professionals.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/recruiter/profile", "host": ["{{base_url}}"], "path": ["api", "recruiter", "profile"] }
+          }
+        },
+        {
+          "name": "Update Logo",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "logo", "type": "file", "src": "", "description": "JPG/PNG/WebP, max 2MB" }]
+            },
+            "url": { "raw": "{{base_url}}/api/recruiter/profile/logo", "host": ["{{base_url}}"], "path": ["api", "recruiter", "profile", "logo"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jobs",
+      "item": [
+        {
+          "name": "List My Jobs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/api/recruiter/jobs?status=&search=&per_page=15",
+              "host": ["{{base_url}}"],
+              "path": ["api", "recruiter", "jobs"],
+              "query": [
+                { "key": "status",   "value": "", "description": "live|pending|rejected|expired" },
+                { "key": "search",   "value": "", "description": "Search by job title" },
+                { "key": "per_page", "value": "15" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Job",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"job_title\": \"Senior Cardiologist\",\n  \"employment_type\": \"full_time\",\n  \"number_of_vacancies\": 2,\n  \"category_slug\": \"doctors\",\n  \"subcategory_name\": \"Cardiologist\",\n  \"specialty_id\": null,\n  \"experience_min\": 5,\n  \"experience_max\": 15,\n  \"salary_disclosed\": true,\n  \"salary_min\": 200000,\n  \"salary_max\": 400000,\n  \"posting_duration_days\": 30,\n  \"job_description\": \"We are looking for an experienced Cardiologist to join our Cardiac Sciences department. The role involves OPD consultations, invasive and non-invasive cardiac procedures, and participating in multi-disciplinary team meetings. The candidate must have strong diagnostic skills and be committed to delivering the highest standard of patient care.\",\n  \"key_skills\": [\"Echocardiography\", \"Angioplasty\", \"ECG Interpretation\", \"Patient Management\"],\n  \"educational_requirements\": [\"MBBS\", \"MD (Medicine)\", \"DM (Cardiology)\"],\n  \"medical_qualifications\": [\"DM Cardiology\"],\n  \"certifications_required\": [],\n  \"specialties\": [\"Cardiology\", \"Interventional Cardiology\"],\n  \"perks_and_benefits\": [\"Health Insurance\", \"PF\", \"Gratuity\", \"Accommodation\"],\n  \"location_city\": \"Chennai\",\n  \"location_state\": \"Tamil Nadu\",\n  \"location_office_address\": \"21 Greams Lane, Chennai\",\n  \"location_pincode\": \"600006\",\n  \"is_remote\": false,\n  \"contact_name\": \"Ramesh Gupta\",\n  \"contact_email\": \"hr@apollohospitals.com\",\n  \"contact_phone\": \"9988776655\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/recruiter/jobs", "host": ["{{base_url}}"], "path": ["api", "recruiter", "jobs"] }
+          }
+        },
+        {
+          "name": "Get Job Detail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/recruiter/jobs/{{job_id}}", "host": ["{{base_url}}"], "path": ["api", "recruiter", "jobs", "{{job_id}}"] }
+          }
+        },
+        {
+          "name": "Update Job",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"job_title\": \"Senior Cardiologist — Updated\",\n  \"employment_type\": \"full_time\",\n  \"number_of_vacancies\": 3,\n  \"category_slug\": \"doctors\",\n  \"subcategory_name\": \"Cardiologist\",\n  \"experience_min\": 5,\n  \"experience_max\": 20,\n  \"salary_disclosed\": true,\n  \"salary_min\": 250000,\n  \"salary_max\": 450000,\n  \"posting_duration_days\": 30,\n  \"job_description\": \"Updated job description with at least 100 characters. We are looking for an experienced Cardiologist to join our team and deliver high-quality patient care.\",\n  \"key_skills\": [\"Echocardiography\", \"Angioplasty\", \"Patient Management\"],\n  \"location_city\": \"Chennai\",\n  \"location_state\": \"Tamil Nadu\",\n  \"is_remote\": false,\n  \"contact_email\": \"hr@apollohospitals.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/recruiter/jobs/{{job_id}}", "host": ["{{base_url}}"], "path": ["api", "recruiter", "jobs", "{{job_id}}"] }
+          }
+        },
+        {
+          "name": "Delete Job",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/recruiter/jobs/{{job_id}}", "host": ["{{base_url}}"], "path": ["api", "recruiter", "jobs", "{{job_id}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Applications",
+      "item": [
+        {
+          "name": "List All Applications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/api/recruiter/applications?status=&ranking=&job_id=&search=&per_page=15",
+              "host": ["{{base_url}}"],
+              "path": ["api", "recruiter", "applications"],
+              "query": [
+                { "key": "status",   "value": "", "description": "applied|reviewed|shortlisted|interviewed|scheduled|offered|rejected" },
+                { "key": "ranking",  "value": "", "description": "A|B|C|D" },
+                { "key": "job_id",   "value": "", "description": "Filter by specific job ID" },
+                { "key": "search",   "value": "", "description": "Search by applicant name or email" },
+                { "key": "per_page", "value": "15" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Application Detail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/recruiter/applications/{{app_id}}", "host": ["{{base_url}}"], "path": ["api", "recruiter", "applications", "{{app_id}}"] }
+          }
+        },
+        {
+          "name": "Applications for a Job",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/api/recruiter/jobs/{{job_id}}/applications?status=&per_page=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "recruiter", "jobs", "{{job_id}}", "applications"],
+              "query": [
+                { "key": "status",   "value": "", "description": "Filter by status" },
+                { "key": "per_page", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Application Status",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"shortlisted\",\n  \"notes\": \"Strong candidate. Matches all key requirements. Schedule interview.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/recruiter/applications/{{app_id}}/status", "host": ["{{base_url}}"], "path": ["api", "recruiter", "applications", "{{app_id}}", "status"] }
+          },
+          "description": "Valid statuses: applied, reviewed, shortlisted, interviewed, scheduled, offered, rejected"
+        },
+        {
+          "name": "Update Application Ranking",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ranking\": \"A\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/recruiter/applications/{{app_id}}/ranking", "host": ["{{base_url}}"], "path": ["api", "recruiter", "applications", "{{app_id}}", "ranking"] }
+          },
+          "description": "Valid rankings: A (Excellent), B (Good), C (Average), D (Poor)"
+        }
+      ]
+    },
+    {
+      "name": "Plans",
+      "item": [
+        {
+          "name": "List Available Plans",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/recruiter/plans", "host": ["{{base_url}}"], "path": ["api", "recruiter", "plans"] }
+          }
+        },
+        {
+          "name": "My Active Plan",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/recruiter/my-plan", "host": ["{{base_url}}"], "path": ["api", "recruiter", "my-plan"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Candidates",
+      "item": [
+        {
+          "name": "View Candidate Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/recruiter/candidates/{{candidate_id}}", "host": ["{{base_url}}"], "path": ["api", "recruiter", "candidates", "{{candidate_id}}"] }
+          },
+          "description": "Full candidate profile including education, employment, certifications, languages, and more."
+        }
+      ]
+    },
+    {
+      "name": "Public — Jobs",
+      "item": [
+        {
+          "name": "Browse Jobs",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/api/jobs?search=&category=&specialty_id=&state=&city=&remote=&employment_type=&sort=latest&per_page=15",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs"],
+              "query": [
+                { "key": "search",          "value": "",       "description": "Search by title, institution, city" },
+                { "key": "category",        "value": "",       "description": "Job category slug" },
+                { "key": "specialty_id",    "value": "",       "description": "Specialty ID" },
+                { "key": "state",           "value": "",       "description": "Filter by state" },
+                { "key": "city",            "value": "",       "description": "Filter by city" },
+                { "key": "remote",          "value": "",       "description": "true = remote only" },
+                { "key": "employment_type", "value": "",       "description": "full_time|part_time|contract|internship" },
+                { "key": "experience_max",  "value": "",       "description": "Max years of experience required" },
+                { "key": "sort",            "value": "latest", "description": "latest|featured|expiring" },
+                { "key": "per_page",        "value": "15" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Job Detail",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/jobs/{{job_id}}", "host": ["{{base_url}}"], "path": ["api", "jobs", "{{job_id}}"] }
+          }
+        }
+      ]
+    }
+  ]
+}

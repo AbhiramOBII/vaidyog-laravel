@@ -52,7 +52,19 @@
             <span x-show="saved" x-transition.opacity class="text-sm font-medium text-green-600">Saved &#10003;</span>
         </div>
         <form wire:submit="savePersonalInfo" class="space-y-5">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-[120px_1fr_1fr] gap-5">
+                <div>
+                    <label class="block text-sm font-medium text-neutral-700 mb-1">Salutation</label>
+                    <select wire:model="salutation" class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-[#464d79]/20 focus:border-[#464d79] transition-colors">
+                        <option value="">Select</option>
+                        <option value="Mr">Mr</option>
+                        <option value="Mrs">Mrs</option>
+                        <option value="Ms">Ms</option>
+                        <option value="Dr">Dr</option>
+                        <option value="Prof">Prof</option>
+                    </select>
+                    @error('salutation') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                </div>
                 <div>
                     <label class="block text-sm font-medium text-neutral-700 mb-1">First Name <span class="text-red-500">*</span></label>
                     <input type="text" wire:model="first_name" class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-[#464d79]/20 focus:border-[#464d79] transition-colors" placeholder="First name">
@@ -63,6 +75,8 @@
                     <input type="text" wire:model="last_name" class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-[#464d79]/20 focus:border-[#464d79] transition-colors" placeholder="Last name">
                     @error('last_name') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-sm font-medium text-neutral-700 mb-1">Date of Birth <span class="text-red-500">*</span></label>
                     <input type="date" wire:model="date_of_birth" class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-[#464d79]/20 focus:border-[#464d79] transition-colors">
@@ -89,19 +103,34 @@
                     <p class="text-xs text-neutral-400 mt-1">Email cannot be changed here.</p>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-neutral-700 mb-1">City <span class="text-red-500">*</span></label>
-                    <input type="text" wire:model="city" class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-[#464d79]/20 focus:border-[#464d79] transition-colors" placeholder="City">
-                    @error('city') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    <label class="block text-sm font-medium text-neutral-700 mb-1">Country <span class="text-red-500">*</span></label>
+                    <select wire:model.live="country" class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-[#464d79]/20 focus:border-[#464d79] transition-colors">
+                        <option value="">Select Country</option>
+                        @foreach ($this->countries as $c)
+                            <option value="{{ $c->name }}">{{ $c->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('country') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-neutral-700 mb-1">State <span class="text-red-500">*</span></label>
-                    <select wire:model="state" class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-[#464d79]/20 focus:border-[#464d79] transition-colors">
+                    <select wire:model.live="state" class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-[#464d79]/20 focus:border-[#464d79] transition-colors" {{ !$country ? 'disabled' : '' }}>
                         <option value="">Select State</option>
-                        @foreach ($indianStates as $st)
-                            <option value="{{ $st }}">{{ $st }}</option>
+                        @foreach ($this->states as $s)
+                            <option value="{{ $s->name }}">{{ $s->name }}</option>
                         @endforeach
                     </select>
                     @error('state') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-neutral-700 mb-1">City <span class="text-red-500">*</span></label>
+                    <select wire:model.live="city" class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-[#464d79]/20 focus:border-[#464d79] transition-colors" {{ !$state ? 'disabled' : '' }}>
+                        <option value="">Select City</option>
+                        @foreach ($this->cities as $ct)
+                            <option value="{{ $ct->name }}">{{ $ct->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('city') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-neutral-700 mb-1">Pincode</label>

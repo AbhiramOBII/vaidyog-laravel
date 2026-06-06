@@ -18,6 +18,42 @@
         </div>
     </div>
 
+    {{-- AI Resume Builder Banner --}}
+    <div class="rounded-2xl border border-neutral-200 bg-white p-5 sm:p-6 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-[#464d79]/5 to-transparent rounded-full -translate-y-1/2 translate-x-1/3"></div>
+        <div class="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex items-start gap-4">
+                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-[#464d79] to-[#4ab098] flex items-center justify-center shadow-lg shadow-[#464d79]/20">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h3 class="font-bold text-neutral-900">AI Resume Builder</h3>
+                        <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-[#464d79] to-[#4ab098] text-white rounded-full">New</span>
+                    </div>
+                    <p class="text-sm text-neutral-600 mt-0.5">Create a professional, ATS-friendly resume in seconds using AI. Upload your existing CV or start fresh.</p>
+                </div>
+            </div>
+            @if(auth()->user()->activeSubscription())
+                <a href="{{ route('jobseeker.ai.resume-builder') }}" wire:navigate class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#464d79] hover:bg-[#3a4066] text-white text-sm font-semibold rounded-lg shadow-md shadow-[#464d79]/20 transition-all shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    Build My Resume
+                </a>
+            @else
+                <a href="{{ route('plans.index') }}" wire:navigate class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#464d79] to-[#4ab098] hover:opacity-90 text-white text-sm font-semibold rounded-lg shadow-md transition-all shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    Upgrade to Access
+                </a>
+            @endif
+        </div>
+        @unless(auth()->user()->activeSubscription())
+            <p class="relative z-10 text-xs text-amber-600 mt-3 ml-16 flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                This feature is available for paid subscribers only. <a href="{{ route('plans.index') }}" wire:navigate class="underline font-medium hover:text-amber-700">View plans</a>
+            </p>
+        @endunless
+    </div>
+
     {{-- Stats Cards — Colourful --}}
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {{-- Profile Completeness --}}

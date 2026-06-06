@@ -1,0 +1,586 @@
+{
+  "info": {
+    "name": "Vaidyog — Job Seeker API",
+    "_postman_id": "vaidyog-jobseeker-api-v1",
+    "description": "Complete API collection for Job Seekers on the Vaidyog healthcare jobs platform.\n\n**Auth:** After calling Login or Register, the token is automatically saved to `{{token}}`.\n\nAll protected routes require: `Authorization: Bearer {{token}}`",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000", "type": "string" },
+    { "key": "token",    "value": "",                     "type": "string" },
+    { "key": "job_id",   "value": "",                     "type": "string" },
+    { "key": "app_id",   "value": "",                     "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "event": [{ "listen": "test", "script": { "exec": ["var res = pm.response.json();", "if (res.data && res.data.token) pm.collectionVariables.set('token', res.data.token);"], "type": "text/javascript" } }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Dr. Priya Sharma\",\n  \"email\": \"priya.sharma@example.com\",\n  \"phone\": \"9876543210\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/jobseeker/register", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "register"] }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [{ "listen": "test", "script": { "exec": ["var res = pm.response.json();", "if (res.data && res.data.token) pm.collectionVariables.set('token', res.data.token);"], "type": "text/javascript" } }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"priya.sharma@example.com\",\n  \"password\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/jobseeker/login", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "login"] }
+          }
+        },
+        {
+          "name": "Me (Current User)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/jobseeker/me", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "me"] }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/jobseeker/logout", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "logout"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/jobseeker/dashboard", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "dashboard"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile"] }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"salutation\": \"Dr\",\n  \"first_name\": \"Priya\",\n  \"last_name\": \"Sharma\",\n  \"gender\": \"female\",\n  \"date_of_birth\": \"1990-05-15\",\n  \"phone\": \"9876543210\",\n  \"email\": \"priya.sharma@example.com\",\n  \"country\": \"India\",\n  \"state\": \"Maharashtra\",\n  \"city\": \"Mumbai\",\n  \"pincode\": \"400001\",\n  \"nationality\": \"Indian\",\n  \"designation\": \"General Physician\",\n  \"specialty_id\": null,\n  \"category_slug\": \"doctors\",\n  \"subcategory_name\": \"General Physician\",\n  \"about\": \"Experienced physician with 8 years in clinical practice.\",\n  \"experience_years\": 8,\n  \"current_employer\": \"Apollo Hospitals\",\n  \"highest_qualification\": \"MBBS, MD\",\n  \"key_skills\": [\"Patient Care\", \"Diagnosis\", \"Emergency Medicine\"],\n  \"is_open_to_work\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile"] }
+          }
+        },
+        {
+          "name": "Update Profile Photo",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "photo", "type": "file", "src": "", "description": "JPG/PNG/WebP, max 2MB" }]
+            },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/photo", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "photo"] }
+          }
+        },
+        {
+          "name": "Upload Resume",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "resume", "type": "file", "src": "", "description": "PDF/DOC/DOCX, max 5MB" }]
+            },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/resume", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "resume"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profile — Education",
+      "item": [
+        {
+          "name": "List Education",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/education", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "education"] }
+          }
+        },
+        {
+          "name": "Add Education",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"degree\": \"MBBS\",\n  \"university\": \"University of Mumbai\",\n  \"course\": \"Bachelor of Medicine\",\n  \"specialization\": \"General Medicine\",\n  \"course_type\": \"full_time\",\n  \"course_duration_start\": 2008,\n  \"course_duration_end\": 2013,\n  \"grading_system\": \"percentage\",\n  \"grade\": \"78\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/education", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "education"] }
+          }
+        },
+        {
+          "name": "Update Education",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"degree\": \"MBBS\",\n  \"university\": \"University of Mumbai\",\n  \"course\": \"Bachelor of Medicine\",\n  \"course_duration_start\": 2008,\n  \"course_duration_end\": 2013\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/education/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "education", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+          }
+        },
+        {
+          "name": "Delete Education",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/education/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "education", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profile — Employment",
+      "item": [
+        {
+          "name": "List Employment",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/employment", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "employment"] }
+          }
+        },
+        {
+          "name": "Add Employment",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"company_name\": \"Apollo Hospitals\",\n  \"job_title\": \"General Physician\",\n  \"employment_type\": \"full_time\",\n  \"is_current\": true,\n  \"joining_date\": \"2018-06-01\",\n  \"leaving_date\": null,\n  \"total_experience_months\": 96,\n  \"current_salary\": 150000,\n  \"salary_currency\": \"INR\",\n  \"responsibilities\": \"OPD consultations, patient diagnosis and treatment.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/employment", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "employment"] }
+          }
+        },
+        {
+          "name": "Update Employment",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"company_name\": \"Apollo Hospitals\",\n  \"job_title\": \"Senior Physician\",\n  \"is_current\": true,\n  \"joining_date\": \"2018-06-01\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/employment/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "employment", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+          }
+        },
+        {
+          "name": "Delete Employment",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/employment/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "employment", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profile — Certifications",
+      "item": [
+        {
+          "name": "List Certifications",
+          "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{base_url}}/api/jobseeker/profile/certifications", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "certifications"] } }
+        },
+        {
+          "name": "Add Certification",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Advanced Cardiac Life Support (ACLS)\",\n  \"completion_date\": \"2022-03-15\",\n  \"certification_id\": \"ACLS-2022-1234\",\n  \"certification_url\": \"https://example.com/cert/1234\",\n  \"medical_institute\": \"American Heart Association\",\n  \"validity_start\": \"2022-03-15\",\n  \"validity_end\": \"2024-03-15\",\n  \"no_expiry\": false\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/certifications", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "certifications"] }
+          }
+        },
+        {
+          "name": "Update Certification",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"ACLS\",\n  \"no_expiry\": true\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/certifications/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "certifications", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+          }
+        },
+        {
+          "name": "Delete Certification",
+          "request": { "method": "DELETE", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{base_url}}/api/jobseeker/profile/certifications/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "certifications", ":id"], "variable": [{ "key": "id", "value": "1" }] } }
+        }
+      ]
+    },
+    {
+      "name": "Profile — Languages",
+      "item": [
+        { "name": "List Languages", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{base_url}}/api/jobseeker/profile/languages", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "languages"] } } },
+        {
+          "name": "Add Language",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Hindi\",\n  \"proficiency\": \"native\",\n  \"can_read\": true,\n  \"can_write\": true,\n  \"can_speak\": true\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/languages", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "languages"] }
+          }
+        },
+        {
+          "name": "Update Language",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"English\",\n  \"proficiency\": \"proficient\",\n  \"can_read\": true,\n  \"can_write\": true,\n  \"can_speak\": true\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/languages/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "languages", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+          }
+        },
+        { "name": "Delete Language", "request": { "method": "DELETE", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{base_url}}/api/jobseeker/profile/languages/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "languages", ":id"], "variable": [{ "key": "id", "value": "1" }] } }
+        }
+      ]
+    },
+    {
+      "name": "Profile — Projects",
+      "item": [
+        { "name": "List Projects", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{base_url}}/api/jobseeker/profile/projects", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "projects"] } } },
+        {
+          "name": "Add Project",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Telemedicine Portal\",\n  \"location\": \"Mumbai\",\n  \"client_name\": \"Apollo Hospitals\",\n  \"status\": \"finished\",\n  \"start_date\": \"2021-01-01\",\n  \"end_date\": \"2021-06-30\",\n  \"details\": \"Developed a telemedicine consultation portal for remote patients.\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/projects", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "projects"] }
+          }
+        },
+        {
+          "name": "Update Project",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Telemedicine Portal v2\",\n  \"status\": \"in_progress\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/projects/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "projects", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+          }
+        },
+        { "name": "Delete Project", "request": { "method": "DELETE", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{base_url}}/api/jobseeker/profile/projects/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "projects", ":id"], "variable": [{ "key": "id", "value": "1" }] } } }
+      ]
+    },
+    {
+      "name": "Profile — Publications",
+      "item": [
+        { "name": "List Publications", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{base_url}}/api/jobseeker/profile/publications", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "publications"] } } },
+        {
+          "name": "Add Publication",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Impact of Telemedicine on Rural Healthcare\",\n  \"publication_name\": \"Indian Journal of Medicine\",\n  \"published_date\": \"2022-09-01\",\n  \"url\": \"https://example.com/publication/1\",\n  \"description\": \"A study on telemedicine adoption in rural India.\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/publications", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "publications"] }
+          }
+        },
+        {
+          "name": "Update Publication",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Impact of Telemedicine\",\n  \"published_date\": \"2022-09-15\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/publications/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "publications", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+          }
+        },
+        { "name": "Delete Publication", "request": { "method": "DELETE", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{base_url}}/api/jobseeker/profile/publications/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "publications", ":id"], "variable": [{ "key": "id", "value": "1" }] } } }
+      ]
+    },
+    {
+      "name": "Profile — Presentations",
+      "item": [
+        { "name": "List Presentations", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{base_url}}/api/jobseeker/profile/presentations", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "presentations"] } } },
+        {
+          "name": "Add Presentation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"AI in Diagnostics\",\n  \"event_name\": \"MedTech Conference 2023\",\n  \"event_date\": \"2023-11-20\",\n  \"location\": \"Bengaluru\",\n  \"description\": \"Presented findings on AI applications in radiology.\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/presentations", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "presentations"] }
+          }
+        },
+        {
+          "name": "Update Presentation",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"AI in Diagnostics — Updated\",\n  \"event_date\": \"2023-11-21\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/presentations/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "presentations", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+          }
+        },
+        { "name": "Delete Presentation", "request": { "method": "DELETE", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{base_url}}/api/jobseeker/profile/presentations/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "presentations", ":id"], "variable": [{ "key": "id", "value": "1" }] } } }
+      ]
+    },
+    {
+      "name": "Profile — Research",
+      "item": [
+        { "name": "List Research", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{base_url}}/api/jobseeker/profile/research", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "research"] } } },
+        {
+          "name": "Add Research",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Outcomes of Early Intervention in Diabetic Patients\",\n  \"institution\": \"AIIMS Mumbai\",\n  \"published_date\": \"2023-05-01\",\n  \"url\": \"https://example.com/research/1\",\n  \"description\": \"A longitudinal study on diabetes management.\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/research", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "research"] }
+          }
+        },
+        {
+          "name": "Update Research",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Updated Research Title\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/research/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "research", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+          }
+        },
+        { "name": "Delete Research", "request": { "method": "DELETE", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{base_url}}/api/jobseeker/profile/research/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "research", ":id"], "variable": [{ "key": "id", "value": "1" }] } } }
+      ]
+    },
+    {
+      "name": "Profile — Honours & Awards",
+      "item": [
+        { "name": "List Honours & Awards", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{base_url}}/api/jobseeker/profile/honours-awards", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "honours-awards"] } } },
+        {
+          "name": "Add Honour / Award",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Best Young Physician Award\",\n  \"issuing_body\": \"Indian Medical Association\",\n  \"award_date\": \"2022-01-26\",\n  \"description\": \"Awarded for excellence in patient care and community service.\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/honours-awards", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "honours-awards"] }
+          }
+        },
+        {
+          "name": "Update Honour / Award",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Best Physician Award\",\n  \"award_date\": \"2022-02-01\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/honours-awards/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "honours-awards", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+          }
+        },
+        { "name": "Delete Honour / Award", "request": { "method": "DELETE", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{base_url}}/api/jobseeker/profile/honours-awards/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "honours-awards", ":id"], "variable": [{ "key": "id", "value": "1" }] } } }
+      ]
+    },
+    {
+      "name": "Profile — Affiliations",
+      "item": [
+        { "name": "List Affiliations", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{base_url}}/api/jobseeker/profile/affiliations", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "affiliations"] } } },
+        {
+          "name": "Add Affiliation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"organization_name\": \"Indian Medical Association\",\n  \"role\": \"Member\",\n  \"member_since\": \"2015-06-01\",\n  \"member_until\": null,\n  \"is_current\": true\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/affiliations", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "affiliations"] }
+          }
+        },
+        {
+          "name": "Update Affiliation",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"organization_name\": \"IMA\",\n  \"role\": \"Senior Member\",\n  \"is_current\": true\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/api/jobseeker/profile/affiliations/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "affiliations", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+          }
+        },
+        { "name": "Delete Affiliation", "request": { "method": "DELETE", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{base_url}}/api/jobseeker/profile/affiliations/:id", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "profile", "affiliations", ":id"], "variable": [{ "key": "id", "value": "1" }] } } }
+      ]
+    },
+    {
+      "name": "Applications",
+      "item": [
+        {
+          "name": "List My Applications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/api/jobseeker/applications?status=&search=&per_page=15",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobseeker", "applications"],
+              "query": [
+                { "key": "status",   "value": "",   "description": "applied|reviewed|shortlisted|interviewed|scheduled|offered|rejected" },
+                { "key": "search",   "value": "",   "description": "Search by job title or institution" },
+                { "key": "per_page", "value": "15" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Application Detail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/jobseeker/applications/{{app_id}}", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "applications", "{{app_id}}"] }
+          }
+        },
+        {
+          "name": "Apply for a Job",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "cover_note", "value": "I am highly interested in this role and believe my 8 years of experience make me a strong fit.", "type": "text" },
+                { "key": "resume",     "type": "file", "src": "", "description": "Optional — uses profile resume if not provided" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/api/jobseeker/jobs/{{job_id}}/apply", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "jobs", "{{job_id}}", "apply"] }
+          }
+        },
+        {
+          "name": "Withdraw Application",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/jobseeker/applications/{{app_id}}", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "applications", "{{app_id}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Saved Jobs",
+      "item": [
+        {
+          "name": "List Saved Jobs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/api/jobseeker/saved-jobs?per_page=15",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobseeker", "saved-jobs"],
+              "query": [{ "key": "per_page", "value": "15" }]
+            }
+          }
+        },
+        {
+          "name": "Save a Job",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/jobseeker/saved-jobs/{{job_id}}", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "saved-jobs", "{{job_id}}"] }
+          }
+        },
+        {
+          "name": "Remove Saved Job",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/jobseeker/saved-jobs/{{job_id}}", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "saved-jobs", "{{job_id}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Plans",
+      "item": [
+        {
+          "name": "List Available Plans",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/jobseeker/plans", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "plans"] }
+          }
+        },
+        {
+          "name": "My Active Plan",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/jobseeker/my-plan", "host": ["{{base_url}}"], "path": ["api", "jobseeker", "my-plan"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Public — Jobs",
+      "item": [
+        {
+          "name": "Browse Jobs",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/api/jobs?search=&category=&specialty_id=&state=&city=&remote=&employment_type=&sort=latest&per_page=15",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs"],
+              "query": [
+                { "key": "search",          "value": "",       "description": "Search by title, institution, city" },
+                { "key": "category",        "value": "",       "description": "Job category slug" },
+                { "key": "specialty_id",    "value": "",       "description": "Specialty ID" },
+                { "key": "state",           "value": "",       "description": "Filter by state" },
+                { "key": "city",            "value": "",       "description": "Filter by city" },
+                { "key": "remote",          "value": "",       "description": "true = remote only" },
+                { "key": "employment_type", "value": "",       "description": "full_time|part_time|contract|internship" },
+                { "key": "experience_max",  "value": "",       "description": "Max years of experience required" },
+                { "key": "sort",            "value": "latest", "description": "latest|featured|expiring" },
+                { "key": "per_page",        "value": "15" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Job Detail",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/jobs/{{job_id}}", "host": ["{{base_url}}"], "path": ["api", "jobs", "{{job_id}}"] }
+          }
+        }
+      ]
+    }
+  ]
+}

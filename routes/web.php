@@ -22,7 +22,9 @@ use App\Livewire\Admin\Jobs\JobPending as AdminJobPending;
 use App\Livewire\Admin\Jobs\JobShow as AdminJobShow;
 use App\Livewire\Admin\JobSeekers\JobSeekerBulkImport;
 use App\Livewire\Admin\JobSeekers\JobSeekerCreate;
+use App\Livewire\Admin\JobSeekers\JobSeekerEdit;
 use App\Livewire\Admin\JobSeekers\JobSeekerIndex;
+use App\Livewire\Admin\JobSeekers\JobSeekerShow;
 use App\Livewire\Admin\Recruiters\RecruiterCreate;
 use App\Livewire\Admin\Recruiters\RecruiterEdit;
 use App\Livewire\Admin\Recruiters\RecruiterIndex;
@@ -31,6 +33,7 @@ use App\Livewire\Frontend\Auth\RecruiterGoogleOnboarding;
 use App\Livewire\Frontend\Auth\RecruiterRegistration;
 use App\Livewire\Frontend\Jobs\JobDetail;
 use App\Livewire\Frontend\Jobs\JobIndex as PublicJobIndex;
+use App\Livewire\Frontend\Profile\PublicProfile;
 use App\Livewire\JobSeeker\Applications\ApplicationIndex as JobSeekerApplicationIndex;
 use App\Livewire\JobSeeker\Applications\ApplicationShow as JobSeekerApplicationShow;
 use App\Livewire\JobSeeker\SavedJobs\SavedJobIndex;
@@ -67,6 +70,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/job-seekers', JobSeekerIndex::class)->name('job-seekers.index')->middleware('admin.permission:job_seekers.view');
         Route::get('/job-seekers/create', JobSeekerCreate::class)->name('job-seekers.create')->middleware('admin.permission:job_seekers.create');
         Route::get('/job-seekers/bulk-import', JobSeekerBulkImport::class)->name('job-seekers.bulk-import')->middleware('admin.permission:job_seekers.create');
+        Route::get('/job-seekers/{user}', JobSeekerShow::class)->name('job-seekers.show')->middleware('admin.permission:job_seekers.view');
+        Route::get('/job-seekers/{user}/edit', JobSeekerEdit::class)->name('job-seekers.edit')->middleware('admin.permission:job_seekers.edit');
 
         // Recruiters
         Route::get('/recruiters', RecruiterIndex::class)->name('recruiters.index')->middleware('admin.permission:recruiters.view');
@@ -267,6 +272,11 @@ Route::middleware('auth')->prefix('profile')->name('profile.')->group(function (
     Route::get('/edit', \App\Livewire\JobSeeker\Profile\ProfileEdit::class)->name('edit');
 });
 
+// AI Tools (Job Seekers)
+Route::middleware('auth')->prefix('ai')->name('jobseeker.ai.')->group(function () {
+    Route::get('/resume-builder', \App\Livewire\JobSeeker\AI\ResumeBuilder::class)->name('resume-builder');
+});
+
 // Feedback & Support (Job Seekers)
 Route::middleware('auth')->group(function () {
     Route::get('/feedback', \App\Livewire\Shared\FeedbackForm::class)->name('jobseeker.feedback');
@@ -280,6 +290,7 @@ Route::middleware('auth')->group(function () {
 */
 Route::get('/best-healthcare-jobs', PublicJobIndex::class)->name('jobs.index');
 Route::get('/best-healthcare-jobs/{job}', JobDetail::class)->name('jobs.show');
+Route::get('/profile/{slug}', PublicProfile::class)->name('profile.public');
 Route::get('/institution/{institution}', \App\Livewire\Frontend\Institutions\InstitutionShow::class)->name('institution.show');
 Route::get('/plans', \App\Livewire\Frontend\Plans\PlanIndex::class)->name('plans.index');
 Route::get('/blogs', \App\Livewire\Frontend\Blogs\BlogIndex::class)->name('blogs.index');

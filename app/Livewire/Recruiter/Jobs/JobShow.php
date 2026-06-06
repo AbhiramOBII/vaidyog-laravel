@@ -4,6 +4,7 @@ namespace App\Livewire\Recruiter\Jobs;
 
 use App\Models\JobBin;
 use App\Models\JobPosting;
+use App\Models\JobSeekerProfile;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -40,8 +41,70 @@ class JobShow extends Component
         $this->redirect(route('recruiter.jobs.index'), navigate: true);
     }
 
+    private function getMatchedCandidates()
+    {
+        $job = $this->job;
+        $query = JobSeekerProfile::query()
+            ->where('is_open_to_work', true)
+            ->whereNotNull('first_name');
+
+        $conditions = [];
+
+        // Match by category
+        if ($job->category_slug) {
+            $conditions[] = fn($q) => $q->where('category_slug', $job->category_slug);
+        }
+
+        // Match by subcategory
+        if ($job->subcategory_name) {
+            $conditions[] = fn($q) => $q->where('subcategory_name', $job->subcategory_name);
+        }
+
+        // Match by specialty
+        if ($job->specialty_id) {
+            $conditions[] = fn($q) => $q->where('specialty_id', $job->specialty_id);
+        }
+
+        // Match by skills (JSON array overlap)
+        if (!empty($job->key_skills)) {
+            $conditions[] = function ($q) use ($job) {
+                $q->where(function ($sq) use ($job) {
+                    foreach ($job->key_skills as $skill) {
+                        $sq->orWhereJsonContains('key_skills', $skill);
+                    }
+                });
+            };
+        }
+
+        // Match by location (state)
+        if ($job->location_state) {
+            $conditions[] = fn($q) => $q->where('state', $job->location_state);
+        }
+
+        if (empty($conditions)) {
+            return collect();
+        }
+
+        // Use OR between conditions to get broad matches
+        $query->where(function ($q) use ($conditions) {
+            foreach ($conditions as $i => $condition) {
+                if ($i === 0) {
+                    $condition($q);
+                } else {
+                    $q->orWhere(function ($sq) use ($condition) {
+                        $condition($sq);
+                    });
+                }
+            }
+        });
+
+        return $query->limit(20)->get();
+    }
+
     public function render()
     {
-        return view('livewire.recruiter.jobs.job-show');
+        return view('livewire.recruiter.jobs.job-show', [
+            'matchedCandidates' => $this->getMatchedCandidates(),
+        ]);
     }
 }

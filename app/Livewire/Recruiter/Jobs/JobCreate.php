@@ -6,6 +6,7 @@ use App\Enums\EmploymentTypeEnum;
 use App\Models\City;
 use App\Models\JobCategory;
 use App\Models\JobPosting;
+use App\Models\JobSeekerProfile;
 use App\Models\JobSubcategory;
 use App\Models\Specialty;
 use App\Models\StandardTag;
@@ -178,8 +179,8 @@ class JobCreate extends Component
         $user = Auth::user();
         $profile = $user->profile;
 
-        DB::transaction(function () use ($user, $profile) {
-            JobPosting::create([
+        $job = DB::transaction(function () use ($user, $profile) {
+            return JobPosting::create([
                 'recruiter_id' => $user->id,
                 'job_title' => $this->jobTitle,
                 'thumbnail' => $this->thumbnail ? $this->thumbnail->store('job-thumbnails', 'public') : null,
@@ -215,8 +216,54 @@ class JobCreate extends Component
             ]);
         });
 
-        session()->flash('success', 'Job posted successfully! Our AI engine identified top matching candidates.');
-        $this->dispatch('job-created');
+        // Real AI matching: find suitable candidate profiles
+        $matchData = $this->findMatchingCandidates($job);
+
+        session()->flash('success', 'Job posted successfully!');
+        $this->dispatch('job-created', 
+            totalProfiles: JobSeekerProfile::count(),
+            matchedProfiles: $matchData['count'],
+            skillsCount: count($this->keySkills),
+            jobSlug: $job->slug,
+        );
+    }
+
+    private function findMatchingCandidates(JobPosting $job): array
+    {
+        $query = JobSeekerProfile::query()->where('is_open_to_work', true);
+
+        // Match by category
+        if ($job->category_slug) {
+            $query->where(function ($q) use ($job) {
+                $q->where('category_slug', $job->category_slug);
+                if ($job->subcategory_name) {
+                    $q->orWhere('subcategory_name', $job->subcategory_name);
+                }
+            });
+        }
+
+        // Match by specialty
+        if ($job->specialty_id) {
+            $query->orWhere('specialty_id', $job->specialty_id);
+        }
+
+        // Match by skills (JSON array overlap)
+        if (!empty($job->key_skills)) {
+            $query->orWhere(function ($q) use ($job) {
+                foreach ($job->key_skills as $skill) {
+                    $q->orWhereJsonContains('key_skills', $skill);
+                }
+            });
+        }
+
+        // Match by location (state)
+        if ($job->location_state) {
+            $query->orWhere('state', $job->location_state);
+        }
+
+        $count = $query->count();
+
+        return ['count' => $count];
     }
 
     public function render()

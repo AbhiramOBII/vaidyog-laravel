@@ -19,6 +19,7 @@ use Livewire\Component;
 class JobSeekerCreate extends Component
 {
     // Section 1 — Account
+    public string $salutation = '';
     public string $name = '';
     public string $phone = '';
     public string $email = '';
@@ -71,6 +72,7 @@ class JobSeekerCreate extends Component
     public function rules(): array
     {
         return [
+            'salutation' => ['nullable', Rule::in(['Mr', 'Mrs', 'Ms', 'Dr', 'Prof'])],
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'regex:/^[6-9]\d{9}$/', Rule::unique('users', 'phone')],
             'email' => ['nullable', 'email', 'max:255', Rule::unique('users', 'email')],
@@ -123,8 +125,9 @@ class JobSeekerCreate extends Component
                 'phone_verified_at' => $this->phoneVerified ? now() : null,
             ]);
 
-            JobSeekerProfile::create([
+            $profile = JobSeekerProfile::create([
                 'user_id' => $user->id,
+                'salutation' => $this->salutation ?: null,
                 'category_slug' => $category->slug,
                 'category_name' => $category->name,
                 'subcategory_name' => $subcategory->name,
@@ -138,6 +141,8 @@ class JobSeekerCreate extends Component
                 'current_employer' => $this->currentEmployer ?: null,
                 'created_by_admin_id' => Auth::guard('admin')->id(),
             ]);
+
+            $profile->update(['profile_slug' => $profile->generateProfileSlug()]);
         });
 
         session()->flash('success', 'Job seeker created successfully.');

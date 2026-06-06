@@ -1,4 +1,4 @@
-<div x-data="aiMatchingOverlay()" @job-created.window="startProcessing()">
+<div x-data="aiMatchingOverlay()" @job-created.window="startProcessing($event.detail)">
     <div class="mb-6">
         <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Post New Job</h1>
         <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">Fill in the details below. Your job will be reviewed by admin before going live.</p>
@@ -79,11 +79,20 @@
 
                 {{-- Match result teaser --}}
                 <div x-show="currentStep >= 4" x-transition class="mt-6 px-4">
-                    <div class="bg-gradient-to-r from-emerald-500/10 to-indigo-500/10 border border-emerald-500/20 rounded-xl p-4 text-center">
-                        <p class="text-emerald-400 font-semibold text-sm">Matching Complete</p>
-                        <p class="text-white text-lg font-bold mt-1" x-text="matchedProfiles + ' potential candidates identified'"></p>
-                        <p class="text-slate-400 text-xs mt-1">You'll be notified as applications come in</p>
-                    </div>
+                    <template x-if="matchedProfiles > 0">
+                        <div class="bg-gradient-to-r from-emerald-500/10 to-indigo-500/10 border border-emerald-500/20 rounded-xl p-4 text-center">
+                            <p class="text-emerald-400 font-semibold text-sm">Matching Complete</p>
+                            <p class="text-white text-lg font-bold mt-1" x-text="matchedProfiles + ' potential candidates identified'"></p>
+                            <p class="text-slate-400 text-xs mt-1">You'll be notified as applications come in</p>
+                        </div>
+                    </template>
+                    <template x-if="matchedProfiles === 0">
+                        <div class="bg-gradient-to-r from-amber-500/10 to-red-500/10 border border-amber-500/20 rounded-xl p-4 text-center">
+                            <p class="text-amber-400 font-semibold text-sm">No Matches Found</p>
+                            <p class="text-white text-lg font-bold mt-1">0 candidates match this role</p>
+                            <p class="text-slate-400 text-xs mt-1">As new job seekers register, matches will appear on the job page</p>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>
@@ -98,35 +107,41 @@ function aiMatchingOverlay() {
         progress: 0,
         profilesScanned: 0,
         matchedProfiles: 0,
+        totalProfiles: 0,
+        skillsCount: 0,
+        jobSlug: '',
         statusText: 'Initializing AI engine...',
         steps: [
             { title: 'Analyzing Job Requirements', active: 'Extracting skills, qualifications & preferences...', done: 'Requirements mapped', pending: 'Waiting...', count: '' },
-            { title: 'Scanning Candidate Database', active: 'Searching across 10,000+ healthcare profiles...', done: 'Database scanned', pending: 'Waiting...', count: '' },
+            { title: 'Scanning Candidate Database', active: 'Searching healthcare profiles...', done: 'Database scanned', pending: 'Waiting...', count: '' },
             { title: 'Matching & Ranking Profiles', active: 'Applying AI scoring algorithm...', done: 'Profiles ranked', pending: 'Waiting...', count: '' },
             { title: 'Preparing Recommendations', active: 'Building personalized candidate list...', done: 'Recommendations ready', pending: 'Waiting...', count: '' },
         ],
-        startProcessing() {
+        startProcessing(data) {
+            this.totalProfiles = data.totalProfiles || 0;
+            this.matchedProfiles = data.matchedProfiles || 0;
+            this.skillsCount = data.skillsCount || 0;
+            this.jobSlug = data.jobSlug || '';
             this.showOverlay = true;
             this.currentStep = 0;
             this.progress = 0;
             this.profilesScanned = 0;
-            this.matchedProfiles = 0;
 
             // Step 1: Analyzing (0-1.5s)
             this.statusText = 'Analyzing job requirements...';
             this.animateProgress(0, 25, 1500);
 
             setTimeout(() => {
-                this.steps[0].count = '12 skills';
+                this.steps[0].count = this.skillsCount + ' skills';
                 this.currentStep = 1;
                 this.statusText = 'Scanning candidate database...';
-                this.animateProfileScan();
+                this.animateCounter('profilesScanned', this.totalProfiles, 2000);
                 this.animateProgress(25, 60, 2000);
             }, 1500);
 
             // Step 2: Scanning (1.5-3.5s)
             setTimeout(() => {
-                this.steps[1].count = '10,847';
+                this.steps[1].count = this.totalProfiles.toLocaleString();
                 this.currentStep = 2;
                 this.statusText = 'Matching & ranking candidates...';
                 this.animateProgress(60, 85, 1500);
@@ -134,7 +149,6 @@ function aiMatchingOverlay() {
 
             // Step 3: Matching (3.5-5s)
             setTimeout(() => {
-                this.matchedProfiles = Math.floor(Math.random() * 30) + 25;
                 this.steps[2].count = this.matchedProfiles + ' matches';
                 this.currentStep = 3;
                 this.statusText = 'Preparing your recommendations...';
@@ -144,14 +158,18 @@ function aiMatchingOverlay() {
             // Step 4: Done (6s)
             setTimeout(() => {
                 this.progress = 100;
-                this.steps[3].count = 'Done';
+                this.steps[3].count = this.matchedProfiles > 0 ? 'Done' : 'No matches';
                 this.currentStep = 4;
-                this.statusText = 'AI matching complete!';
+                this.statusText = this.matchedProfiles > 0 ? 'AI matching complete!' : 'No matching candidates found';
             }, 6000);
 
-            // Redirect (7.5s)
+            // Redirect to job detail (7.5s)
             setTimeout(() => {
-                window.location.href = '{{ route("recruiter.jobs.index") }}';
+                if (this.jobSlug) {
+                    window.location.href = '/recruiter/jobs/' + this.jobSlug;
+                } else {
+                    window.location.href = '{{ route("recruiter.jobs.index") }}';
+                }
             }, 7500);
         },
         animateProgress(from, to, duration) {
@@ -164,14 +182,12 @@ function aiMatchingOverlay() {
             };
             requestAnimationFrame(tick);
         },
-        animateProfileScan() {
-            const target = 10847;
-            const duration = 2000;
+        animateCounter(prop, target, duration) {
             const startTime = Date.now();
             const tick = () => {
                 const elapsed = Date.now() - startTime;
                 const pct = Math.min(elapsed / duration, 1);
-                this.profilesScanned = Math.round(target * this.easeOutCubic(pct));
+                this[prop] = Math.round(target * this.easeOutCubic(pct));
                 if (pct < 1) requestAnimationFrame(tick);
             };
             requestAnimationFrame(tick);

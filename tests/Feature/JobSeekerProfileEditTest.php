@@ -82,11 +82,12 @@ class JobSeekerProfileEditTest extends TestCase
             ->set('last_name', '')
             ->set('date_of_birth', '')
             ->set('phone', '')
+            ->set('country', '')
             ->set('city', '')
             ->set('state', '')
             ->set('nationality', '')
             ->call('savePersonalInfo')
-            ->assertHasErrors(['first_name', 'last_name', 'date_of_birth', 'phone', 'city', 'state', 'nationality']);
+            ->assertHasErrors(['first_name', 'last_name', 'date_of_birth', 'phone', 'country', 'city', 'state', 'nationality']);
     }
 
     public function test_personal_info_validates_phone_format(): void
@@ -97,6 +98,7 @@ class JobSeekerProfileEditTest extends TestCase
             ->set('last_name', 'Sharma')
             ->set('date_of_birth', '1990-01-15')
             ->set('phone', '123')
+            ->set('country', 'India')
             ->set('city', 'Mumbai')
             ->set('state', 'Maharashtra')
             ->set('nationality', 'Indian')
@@ -112,6 +114,7 @@ class JobSeekerProfileEditTest extends TestCase
             ->set('last_name', 'Sharma')
             ->set('date_of_birth', now()->addDay()->format('Y-m-d'))
             ->set('phone', '9000000001')
+            ->set('country', 'India')
             ->set('city', 'Mumbai')
             ->set('state', 'Maharashtra')
             ->set('nationality', 'Indian')
@@ -128,8 +131,9 @@ class JobSeekerProfileEditTest extends TestCase
             ->set('date_of_birth', '1990-05-15')
             ->set('gender', 'male')
             ->set('phone', '9000000001')
-            ->set('city', 'Mumbai')
+            ->set('country', 'India')
             ->set('state', 'Maharashtra')
+            ->set('city', 'Mumbai')
             ->set('pincode', '400001')
             ->set('nationality', 'Indian')
             ->call('savePersonalInfo')
@@ -157,8 +161,9 @@ class JobSeekerProfileEditTest extends TestCase
             ->set('last_name', 'User')
             ->set('date_of_birth', '1995-01-01')
             ->set('phone', '9000000001')
-            ->set('city', 'Delhi')
+            ->set('country', 'India')
             ->set('state', 'Delhi')
+            ->set('city', 'Delhi')
             ->set('nationality', 'Indian')
             ->call('savePersonalInfo')
             ->assertHasNoErrors();
@@ -183,8 +188,9 @@ class JobSeekerProfileEditTest extends TestCase
             ->set('last_name', 'Name')
             ->set('date_of_birth', '1990-06-15')
             ->set('phone', '9000000001')
-            ->set('city', 'Pune')
+            ->set('country', 'India')
             ->set('state', 'Maharashtra')
+            ->set('city', 'Pune')
             ->set('nationality', 'Indian')
             ->call('savePersonalInfo')
             ->assertHasNoErrors();

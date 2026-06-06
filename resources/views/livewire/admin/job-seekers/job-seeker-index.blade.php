@@ -178,7 +178,7 @@
                 <tbody class="divide-y divide-neutral-100 dark:divide-neutral-700/50">
                     @forelse($jobSeekers as $seeker)
                         <tr class="hover:bg-neutral-50 dark:hover:bg-neutral-700/30 transition-colors">
-                            <td class="px-4 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">{{ $seeker->name }}</td>
+                            <td class="px-4 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">{{ $seeker->jobSeekerProfile?->getFullName() ?? $seeker->name }}</td>
                             <td class="px-4 py-3 text-neutral-600 dark:text-neutral-400">{{ $seeker->email ?? '—' }}</td>
                             <td class="px-4 py-3 text-neutral-600 dark:text-neutral-400 whitespace-nowrap">{{ $seeker->phone }}</td>
                             <td class="px-4 py-3 text-neutral-600 dark:text-neutral-400">{{ $seeker->jobSeekerProfile?->category_name ?? '—' }}</td>
@@ -219,14 +219,14 @@
                             <td class="px-4 py-3 text-neutral-500 dark:text-neutral-400 whitespace-nowrap text-xs">{{ $seeker->created_at->format('d M Y') }}</td>
                             <td class="px-4 py-3 text-right whitespace-nowrap">
                                 <div class="flex items-center justify-end gap-1">
-                                    <a href="#" title="View" class="w-7 h-7 inline-flex items-center justify-center rounded text-neutral-400 hover:text-[#464d79] hover:bg-[#464d79]/10 transition-colors">
+                                    <a href="{{ route('admin.job-seekers.show', $seeker) }}" wire:navigate title="View" class="w-7 h-7 inline-flex items-center justify-center rounded text-neutral-400 hover:text-[#464d79] hover:bg-[#464d79]/10 transition-colors">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
                                             <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
                                             <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
                                         </svg>
                                     </a>
                                     @if(auth('admin')->user()->hasPermission('job_seekers.edit'))
-                                    <a href="#" title="Edit" class="w-7 h-7 inline-flex items-center justify-center rounded text-neutral-400 hover:text-[#464d79] hover:bg-[#464d79]/10 transition-colors">
+                                    <a href="{{ route('admin.job-seekers.edit', $seeker) }}" wire:navigate title="Edit" class="w-7 h-7 inline-flex items-center justify-center rounded text-neutral-400 hover:text-[#464d79] hover:bg-[#464d79]/10 transition-colors">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
                                             <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
                                         </svg>

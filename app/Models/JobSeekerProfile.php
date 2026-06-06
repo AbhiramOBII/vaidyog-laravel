@@ -11,6 +11,8 @@ class JobSeekerProfile extends Model
 {
     protected $fillable = [
         'user_id',
+        'salutation',
+        'profile_slug',
         'first_name',
         'last_name',
         'category_slug',
@@ -21,6 +23,7 @@ class JobSeekerProfile extends Model
         'gender',
         'email',
         'phone',
+        'country',
         'city',
         'state',
         'pincode',
@@ -132,7 +135,13 @@ class JobSeekerProfile extends Model
     public function getFullName(): string
     {
         $name = trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? ''));
-        return $name ?: ($this->user?->name ?? '');
+        $name = $name ?: ($this->user?->name ?? '');
+
+        if ($this->salutation === 'Dr' && $name) {
+            return 'Dr. ' . $name;
+        }
+
+        return $name;
     }
 
     public function getProfilePictureUrl(): string
@@ -177,5 +186,32 @@ class JobSeekerProfile extends Model
             $this->profile_completeness >= 31 => 'Building your profile',
             default => 'Just getting started',
         };
+    }
+
+    public function generateProfileSlug(): string
+    {
+        $name = trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? ''));
+        $name = $name ?: ($this->user?->name ?? 'user');
+
+        $base = ($this->salutation === 'Dr') ? 'dr-' . $name : $name;
+        $slug = \Illuminate\Support\Str::slug($base);
+
+        $original = $slug;
+        $counter = 1;
+        while (static::where('profile_slug', $slug)->where('id', '!=', $this->id ?? 0)->exists()) {
+            $slug = $original . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
+    }
+
+    public function getProfileUrl(): string
+    {
+        if (!$this->profile_slug) {
+            $this->update(['profile_slug' => $this->generateProfileSlug()]);
+        }
+
+        return route('profile.public', $this->profile_slug);
     }
 }

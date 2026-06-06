@@ -33,7 +33,7 @@
             <div class="bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 p-6">
                 <h3 class="text-sm font-semibold text-neutral-500 uppercase mb-3">Applicant Profile</h3>
                 <div class="grid grid-cols-2 gap-4 text-sm">
-                    <div><span class="text-neutral-500 block text-xs">Name</span><span class="text-neutral-900 dark:text-white">{{ $application->applicant?->name }}</span></div>
+                    <div><span class="text-neutral-500 block text-xs">Name</span><span class="text-neutral-900 dark:text-white">{{ $application->applicant?->jobSeekerProfile?->getFullName() ?? $application->applicant?->name }}</span></div>
                     <div><span class="text-neutral-500 block text-xs">Phone</span><span class="text-neutral-900 dark:text-white">{{ $application->applicant?->phone ?? '—' }}</span></div>
                     <div><span class="text-neutral-500 block text-xs">Category</span><span class="text-neutral-900 dark:text-white">{{ $application->applicant?->jobSeekerProfile?->category_name ?? '—' }}</span></div>
                     <div><span class="text-neutral-500 block text-xs">Experience</span><span class="text-neutral-900 dark:text-white">{{ $application->applicant?->jobSeekerProfile?->experience_years ?? '—' }} yrs</span></div>
