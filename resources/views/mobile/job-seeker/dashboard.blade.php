@@ -2,19 +2,13 @@
 @section('title', 'Home')
 
 @section('app_header')
-<div class="bg-white px-5 py-3 flex items-center justify-between border-b border-neutral-100 shrink-0">
-    <div class="flex items-center gap-3">
-        <img src="https://ui-avatars.com/api/?name=Rahul+Sharma&background=4ab098&color=fff&size=64"
-             class="w-10 h-10 rounded-full object-cover border-2 border-[#4ab098]/30">
-        <div>
-            <p class="text-[11px] text-neutral-400">Good Morning 👋</p>
-            <p class="text-sm font-bold text-neutral-900">Dr. Rahul Sharma</p>
-        </div>
+<div class="bg-white px-5 py-3 flex items-center gap-3 border-b border-neutral-100 shrink-0">
+    <img src="https://ui-avatars.com/api/?name=Rahul+Sharma&background=4ab098&color=fff&size=64"
+         class="w-10 h-10 rounded-full object-cover border-2 border-[#4ab098]/30">
+    <div>
+        <p class="text-[11px] text-neutral-400">Good Morning 👋</p>
+        <p class="text-sm font-bold text-neutral-900">Dr. Rahul Sharma</p>
     </div>
-    <button class="relative w-9 h-9 flex items-center justify-center rounded-xl bg-neutral-100 active:bg-neutral-200">
-        <svg class="w-5 h-5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
-    </button>
 </div>
 @endsection
 
