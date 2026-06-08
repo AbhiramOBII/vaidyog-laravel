@@ -25,6 +25,7 @@ class FeaturedJobPlan extends Model
         return [
             'recruiter_type' => MedTypeEnum::class,
             'price_per_post' => 'decimal:2',
+            'featured_duration_days' => 'integer',
             'is_active' => 'boolean',
         ];
     }

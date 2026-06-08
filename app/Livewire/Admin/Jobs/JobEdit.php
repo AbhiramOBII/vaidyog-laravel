@@ -96,7 +96,9 @@ class JobEdit extends Component
     public function subcategories(): array
     {
         if (!$this->categorySlug) return [];
-        return JobSubcategory::where('category_slug', $this->categorySlug)->orderBy('sort_order')->get()->toArray();
+        $category = \App\Models\JobCategory::where('slug', $this->categorySlug)->first();
+        if (!$category) return [];
+        return JobSubcategory::where('job_category_id', $category->id)->orderBy('sort_order')->get()->toArray();
     }
 
     #[Computed]
@@ -176,7 +178,7 @@ class JobEdit extends Component
                 $data['rejection_reason'] = null;
                 $data['rejected_at'] = null;
                 $data['rejected_by_admin_id'] = null;
-                $data['expires_at'] = now()->addDays($this->postingDurationDays);
+                $data['expires_at'] = now()->addDays((int) $this->postingDurationDays);
             }
 
             $this->job->update($data);

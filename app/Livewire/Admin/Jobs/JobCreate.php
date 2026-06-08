@@ -63,7 +63,9 @@ class JobCreate extends Component
     public function subcategories(): array
     {
         if (!$this->categorySlug) return [];
-        return JobSubcategory::where('category_slug', $this->categorySlug)->orderBy('sort_order')->get()->toArray();
+        $category = \App\Models\JobCategory::where('slug', $this->categorySlug)->first();
+        if (!$category) return [];
+        return JobSubcategory::where('job_category_id', $category->id)->orderBy('sort_order')->get()->toArray();
     }
 
     #[Computed]
@@ -143,7 +145,7 @@ class JobCreate extends Component
                 'admin_approved' => $this->autoApprove,
                 'approved_at' => $this->autoApprove ? now() : null,
                 'approved_by_admin_id' => $this->autoApprove ? Auth::guard('admin')->id() : null,
-                'expires_at' => $this->autoApprove ? now()->addDays($this->postingDurationDays) : null,
+                'expires_at' => $this->autoApprove ? now()->addDays((int) $this->postingDurationDays) : null,
                 'is_active' => true,
             ]);
         });

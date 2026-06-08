@@ -62,7 +62,7 @@ class RecruiterAuthController extends Controller
             ], 401);
         }
 
-        if ($recruiter->status === UserStatusEnum::Suspended) {
+        if ($recruiter->status === UserStatusEnum::Blocked) {
             return response()->json([
                 'success' => false,
                 'message' => 'Your account has been suspended. Please contact support.',

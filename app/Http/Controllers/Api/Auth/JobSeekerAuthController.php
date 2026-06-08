@@ -62,7 +62,7 @@ class JobSeekerAuthController extends Controller
             ], 401);
         }
 
-        if ($user->status === UserStatusEnum::Suspended) {
+        if ($user->status === UserStatusEnum::Blocked) {
             return response()->json([
                 'success' => false,
                 'message' => 'Your account has been suspended. Please contact support.',

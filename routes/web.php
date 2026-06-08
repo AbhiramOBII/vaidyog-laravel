@@ -315,3 +315,17 @@ Route::get('/sitemap-blogs.xml', [\App\Http\Controllers\SitemapController::class
 
 // Razorpay Webhook (no CSRF)
 Route::post('/razorpay/webhook', [\App\Http\Controllers\Webhook\RazorpayWebhookController::class, 'handle'])->name('razorpay.webhook');
+
+/*
+|--------------------------------------------------------------------------
+| Mobile Reference Views — Flutter Developer Reference (no auth required)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('mobile/job-seeker')->name('mobile.jobseeker.')->group(function () {
+    Route::get('/dashboard',    fn() => view('mobile.job-seeker.dashboard'))->name('dashboard');
+    Route::get('/jobs',         fn() => view('mobile.job-seeker.jobs'))->name('jobs');
+    Route::get('/applications', fn() => view('mobile.job-seeker.applications'))->name('applications');
+    Route::get('/saved-jobs',   fn() => view('mobile.job-seeker.saved-jobs'))->name('saved-jobs');
+    Route::get('/profile',      fn() => view('mobile.job-seeker.profile'))->name('profile');
+    Route::get('/edit-profile', fn() => view('mobile.job-seeker.edit-profile'))->name('edit-profile');
+});

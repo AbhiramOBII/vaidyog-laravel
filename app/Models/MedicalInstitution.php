@@ -12,11 +12,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class MedicalInstitution extends Authenticatable
 {
-    use HasApiTokens, HasFactory, HasUlids, Notifiable;
+    use HasFactory, HasUlids, Notifiable;
 
     protected $table = 'users';
 

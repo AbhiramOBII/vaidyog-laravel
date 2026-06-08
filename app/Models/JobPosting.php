@@ -78,6 +78,8 @@ class JobPosting extends Model
             'employment_type' => EmploymentTypeEnum::class,
             'experience_min' => 'decimal:1',
             'experience_max' => 'decimal:1',
+            'posting_duration_days' => 'integer',
+            'number_of_vacancies' => 'integer',
             'admin_approved' => 'boolean',
             'is_active' => 'boolean',
             'is_featured' => 'boolean',
