@@ -161,7 +161,7 @@ class ProfileSectionController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, string $section, int $id): JsonResponse
+    public function update(Request $request, string $id, string $section): JsonResponse
     {
         $config = $this->resolveSection($section);
         $item   = $config['model']::where('id', $id)
@@ -178,7 +178,7 @@ class ProfileSectionController extends Controller
         ]);
     }
 
-    public function destroy(Request $request, string $section, int $id): JsonResponse
+    public function destroy(Request $request, string $id, string $section): JsonResponse
     {
         $config = $this->resolveSection($section);
         $item   = $config['model']::where('id', $id)

@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api\Recruiter;
 
 use App\Http\Controllers\Controller;
 use App\Models\MedicalInstitutionProfile;
+use App\Enums\MedTypeEnum;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
@@ -32,7 +34,7 @@ class ProfileController extends Controller
     {
         $validated = $request->validate([
             'institution_name'      => ['required', 'string', 'max:255'],
-            'med_type'              => ['required', 'string', 'in:hospital,clinic,diagnostic_center,pharmacy,nursing_home,medical_college,research_institute,other'],
+            'med_type'              => ['required', Rule::enum(MedTypeEnum::class)],
             'industry_type'         => ['nullable', 'string', 'max:100'],
             'contact_person_name'   => ['nullable', 'string', 'max:255'],
             'contact_person_email'  => ['nullable', 'email', 'max:255'],
