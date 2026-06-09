@@ -81,10 +81,14 @@ class ResumeBuilder extends Component
                 $path = $this->resumeFile->getRealPath();
                 $extension = $this->resumeFile->getClientOriginalExtension();
 
+                $service = app(AIResumeService::class);
+
                 if ($extension === 'pdf') {
-                    $content = app(AIResumeService::class)->extractTextFromPdf($path);
+                    $content = $service->extractTextFromPdf($path);
+                } elseif (in_array($extension, ['doc', 'docx'])) {
+                    $content = $service->extractTextFromDocx($path);
                 } else {
-                    $content = file_get_contents($path);
+                    $content = $service->sanitizeUtf8(file_get_contents($path));
                 }
             } else {
                 $content = $this->manualContent;

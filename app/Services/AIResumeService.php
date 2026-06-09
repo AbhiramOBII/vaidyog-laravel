@@ -97,7 +97,7 @@ SYSTEM;
         }
 
         if (!empty($data['profile_data'])) {
-            $prompt .= "\n\nADDITIONAL PROFILE DATA:\n" . json_encode($data['profile_data'], JSON_PRETTY_PRINT);
+            $prompt .= "\n\nADDITIONAL PROFILE DATA:\n" . json_encode($data['profile_data'], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
         }
 
         return $prompt;
@@ -124,6 +124,60 @@ SYSTEM;
         }
 
         return $decoded;
+    }
+
+    public function extractTextFromDocx(string $filePath): string
+    {
+        if (!class_exists('ZipArchive')) {
+            return 'Unable to extract DOCX content. Please use the manual input option.';
+        }
+
+        $zip = new \ZipArchive();
+        if ($zip->open($filePath) !== true) {
+            return 'Unable to open DOCX file. Please use the manual input option.';
+        }
+
+        $text = '';
+
+        foreach (['word/document.xml', 'word/document2.xml'] as $entry) {
+            $xml = $zip->getFromName($entry);
+            if ($xml !== false) {
+                $xml = preg_replace('/<w:br[^>]*\/?>/', "\n", $xml);
+                $xml = preg_replace('/<w:p[ >]/', "\n", $xml);
+                $xml = strip_tags($xml);
+                $xml = html_entity_decode($xml, ENT_QUOTES | ENT_XML1, 'UTF-8');
+                $text .= $xml . "\n";
+                break;
+            }
+        }
+
+        $zip->close();
+
+        $text = preg_replace('/[ \t]{2,}/', ' ', $text);
+        $text = preg_replace('/\n{3,}/', "\n\n", $text);
+        $text = $this->sanitizeUtf8(trim($text));
+
+        return $text ?: 'Unable to extract text from DOCX. Please use the manual input option.';
+    }
+
+    public function sanitizeUtf8(string $text): string
+    {
+        // Detect the actual encoding and convert to UTF-8
+        $detected = mb_detect_encoding($text, ['UTF-8', 'Windows-1252', 'ISO-8859-1', 'ISO-8859-15', 'ASCII'], true);
+        if ($detected && $detected !== 'UTF-8') {
+            $text = mb_convert_encoding($text, 'UTF-8', $detected);
+        }
+
+        // Strip any bytes that are still invalid UTF-8 using iconv with //IGNORE
+        $converted = @iconv('UTF-8', 'UTF-8//IGNORE', $text);
+        if ($converted !== false) {
+            $text = $converted;
+        }
+
+        // Remove non-printable control characters (keep tab, LF, CR, and printable Unicode)
+        $result = preg_replace('/[^\x09\x0A\x0D\x20-\x{10FFFF}]/u', '', $text);
+
+        return $result ?? $text;
     }
 
     public function extractTextFromPdf(string $filePath): string
